@@ -13,6 +13,36 @@
         android:theme="@style/Theme.RemiWaza"
         tools:targetApi="31">
         <activity
+            android:name=".ActivityStateRemisero"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityInicioRemisero"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityLoginAgencia"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityLoginRemisero"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityRegistroAgencia"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityRegistroRemisero"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityMensajeInstructivo3"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityMensajeInstructivo2"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityMensajeInstructivo1"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityAdvertencia"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
