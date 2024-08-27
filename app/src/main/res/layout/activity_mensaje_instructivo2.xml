@@ -20,11 +20,11 @@
         app:srcCompat="@drawable/information2" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/bntNext"
         android:layout_width="189dp"
         android:layout_height="725dp"
         android:textColor="@color/white"
-        android:text="      >"
+        android:text="      o"
         android:textSize="50sp"
         style="?android:attr/buttonBarButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,11 +32,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/btnPreview"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="189dp"
         android:layout_height="725dp"
-        android:text="<        "
+        android:text="o        "
         android:textColor="@color/white"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"

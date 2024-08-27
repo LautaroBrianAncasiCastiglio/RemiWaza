@@ -19,11 +19,11 @@
         app:srcCompat="@drawable/information1" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/bntNext"
         android:layout_width="189dp"
         android:layout_height="725dp"
         android:textColor="@color/white"
-        android:text="     >"
+        android:text="     o"
         android:textSize="50sp"
         style="?android:attr/buttonBarButtonStyle"
         app:layout_constraintBottom_toBottomOf="parent"

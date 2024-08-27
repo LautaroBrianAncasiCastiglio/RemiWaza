@@ -1,6 +1,8 @@
 package com.calipso.remiwaza
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +17,22 @@ class ActivityRegistroRemisero : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+        val buttonRegistro= findViewById<Button>(R.id.btnRegistro)
+        val buttonLogin = findViewById<Button>(R.id.btnLogin)
+        val buttonAgencia = findViewById<Button>(R.id.btnAgencia)
+
+        buttonRegistro.setOnClickListener{
+            val intent1= Intent(applicationContext, ActivityInicioRemisero::class.java)
+            startActivity(intent1)
+        }
+        buttonLogin.setOnClickListener{
+            val intent2= Intent(applicationContext, ActivityLoginRemisero::class.java)
+            startActivity(intent2)
+        }
+        buttonAgencia.setOnClickListener{
+            val intent3= Intent(applicationContext, ActivityRegistroAgencia::class.java)
+            startActivity(intent3)
         }
     }
 }

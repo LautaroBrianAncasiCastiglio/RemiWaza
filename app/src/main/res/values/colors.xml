@@ -8,4 +8,7 @@
     <color name="borderColor">#19004F</color>
     <color name="transparentBlack">#40000000</color>
 
+    <color name="stateRed">#E82E2E</color>
+    <color name="stateGreen">#31B72E</color>
+
 </resources>
