@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "652203118890",
+    "project_id": "remiwaza-oficial",
+    "storage_bucket": "remiwaza-oficial.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652203118890:android:a238ce5137b866ab3ace53",
+        "android_client_info": {
+          "package_name": "com.calipso.remiwaza"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr1jSffyUXWvgYiu8WuhcjzfysgiwcDvo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
