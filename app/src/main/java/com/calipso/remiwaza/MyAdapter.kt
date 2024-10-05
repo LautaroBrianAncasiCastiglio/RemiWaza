@@ -6,36 +6,52 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
-import com.calipso.remiwaza.databinding.ListviewCarroRemiseroBinding
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 
-class MyAdapter(private val context: Context, private val listCarro: java.util.ArrayList<ListaAutoRemisero>):
-    BaseAdapter(){
+class MyAdapter(private val listCarro: java.util.ArrayList<ListaAutos>):
+    RecyclerView.Adapter<MyAdapter.CustomViewHolder>() {
 
-    override fun getCount(): Int {
-
-        return listCarro.size
+    // ViewHolder: contiene las vistas para cada item
+    class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val itemName: TextView = itemView.findViewById(R.id.itemName)
+        val itemLastName: TextView = itemView.findViewById(R.id.itemLastName)
+        val itemState: TextView = itemView.findViewById(R.id.itemState)
     }
 
-    override fun getItem(position: Int): Any {
-
-        return position
+    // Infla el diseño de cada elemento
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.listview_carro_remisero, parent, false)
+        return CustomViewHolder(view)
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
+    // Conecta los datos a las vistas
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+        val currentItem = listCarro[position]
+        holder.itemName.text = currentItem.Model
+        holder.itemLastName.text = currentItem.Color
+        holder.itemState.text = currentItem.Name
+
+        // Cambia el color del fondo según el estado de "isActive"
+        if (currentItem.StateA) {
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(
+                    holder.itemView.context,
+                    R.color.stateGreen
+                )
+            )  // Verde
+        } else {
+            holder.itemView.setBackgroundColor(
+                ContextCompat.getColor(
+                    holder.itemView.context,
+                    R.color.stateRed
+                )
+            )  // Rojo
+        }
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
-
-        var binding = ListviewCarroRemiseroBinding.inflate(LayoutInflater.from(parent.context),parent, false)
-        var convertView = convertView
-        convertView = binding.root
-
-        binding.textModel.text = listCarro[position].Model
-        binding.textColor.text = listCarro[position].Color
-        binding.textName.text = listCarro[position].Name
-
-        return convertView
-    }
-
+    // Retorna el tamaño de la lista de datos
+    override fun getItemCount() = listCarro.size
 }

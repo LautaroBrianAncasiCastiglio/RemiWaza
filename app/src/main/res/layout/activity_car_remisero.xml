@@ -8,22 +8,21 @@
     android:background="@drawable/fondo_degradado"
     tools:context=".ActivityCarRemisero">
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listaDerecha"
         android:layout_width="205dp"
         android:layout_height="559dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/listview_carro_remisero" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRight"
         android:layout_width="205dp"
         android:layout_height="559dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" >
 
-    </ListView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <Button
         android:id="@+id/personalCar"

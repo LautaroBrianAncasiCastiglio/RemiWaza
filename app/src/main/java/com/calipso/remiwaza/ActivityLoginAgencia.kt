@@ -10,7 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class ActivityLoginAgencia : AppCompatActivity() {
-    @SuppressLint("MissingInflatedId")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,19 +22,19 @@ class ActivityLoginAgencia : AppCompatActivity() {
         }
         val buttonRegistro= findViewById<Button>(R.id.btnRegistro)
         val buttonLogin = findViewById<Button>(R.id.btnLogin)
-        val buttonAgencia = findViewById<Button>(R.id.btnAgencia)
+        val buttonAgencia = findViewById<Button>(R.id.btnRemisero)
 
         buttonRegistro.setOnClickListener{
             val intent1= Intent(applicationContext, ActivityRegistroAgencia::class.java)
             startActivity(intent1)
         }
-        //buttonLogin.setOnClickListener{
-        //    val intent2= Intent(applicationContext, ActivityInicioAgencia::class.java)
-        //    startActivity(intent2)
-        //}
+        buttonLogin.setOnClickListener{
+            val intent2= Intent(applicationContext, ActivityInicioAgencia::class.java)
+            startActivity(intent2)
+        }
         buttonAgencia.setOnClickListener{
             val intent3= Intent(applicationContext, ActivityLoginRemisero::class.java)
-            startActivity(intent3)
+           startActivity(intent3)
         }
     }
 }

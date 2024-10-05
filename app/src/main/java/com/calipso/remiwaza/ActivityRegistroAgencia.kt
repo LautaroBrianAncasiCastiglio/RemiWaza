@@ -22,10 +22,10 @@ class ActivityRegistroAgencia : AppCompatActivity() {
         val buttonLogin = findViewById<Button>(R.id.btnLogin)
         val buttonRemisero = findViewById<Button>(R.id.btnRemisero)
 
-        //buttonRegistro.setOnClickListener{
-        //    val intent1= Intent(applicationContext, ActivityInicioAgencia::class.java)
-        //    startActivity(intent1)
-        //}
+        buttonRegistro.setOnClickListener{
+            val intent1= Intent(applicationContext, ActivityInicioAgencia::class.java)
+            startActivity(intent1)
+        }
         buttonLogin.setOnClickListener{
             val intent2= Intent(applicationContext, ActivityLoginAgencia::class.java)
             startActivity(intent2)

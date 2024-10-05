@@ -1,6 +1,5 @@
 package com.calipso.remiwaza
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputBinding
@@ -13,37 +12,35 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.calipso.remiwaza.databinding.ActivityCarRemiseroBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class ActivityCarRemisero : AppCompatActivity() {
-
-    var listaCarro: ArrayList<ListaAutoRemisero> = ArrayList()
-    lateinit var arrayAdapter: ArrayAdapter<*>
-    private lateinit var binding : ActivityCarRemiseroBinding
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var customAdapter: MyAdapter
+    private lateinit var dataList: ArrayList<ListaAutos>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCarRemiseroBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_inicio_agencia)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        // Inicializa el RecyclerView
+        recyclerView = findViewById(R.id.listaEmpleados)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-        listaCarro.add(
-            ListaAutoRemisero("a","a","a")
-        )
-        listaCarro.add(
-            ListaAutoRemisero("a","a","a")
-        )
-        listaCarro.add(
-            ListaAutoRemisero("a","a","a")
-        )
-        listaCarro.add(
-            ListaAutoRemisero("a","a","a")
-        )
+        // Crear la lista de datos
+        dataList = ArrayList()
+        dataList.add(ListaAutos("Título 1", "Título 1", "Subtítulo 1",true))
+        dataList.add(ListaAutos("Título 1", "Título 2", "Subtítulo 2",true))
+        dataList.add(ListaAutos("Título 1", "Título 3", "Subtítulo 3",false))
 
-        //val adapter = ListaAutoRemisero(this, listaCarro)
-
-        val adapter = MyAdapter(this, listaCarro)
-        binding.listaDerecha.adapter = adapter
-
-
+        // Configura el adaptador
+        customAdapter = MyAdapter(dataList)
+        recyclerView.adapter = customAdapter
     }
 
 }
