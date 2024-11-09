@@ -1,3 +1,4 @@
+AuthHelper.registerUser("correo@example.com", "contraseña", "Nombre", "driver")
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
