@@ -52,6 +52,12 @@ dependencies {
 
     //REALTIME DATABASE
     implementation ("com.google.firebase:firebase-database-ktx")
+
+    //AUTHENTICATION
+    implementation ("com.google.firebase:firebase-auth:21.0.1")
+
+    //DATABASE
+    implementation ("com.google.firebase:firebase-database:20.0.7")
     
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
