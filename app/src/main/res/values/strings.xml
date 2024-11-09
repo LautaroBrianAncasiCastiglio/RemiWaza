@@ -2,3 +2,9 @@
     <string name="app_name">RemiWaza</string>
     <string name="RemiWaza">RemiWaza</string>
 </resources>
+
+
+<string-array name="user_types">
+    <item>Remisero</item>
+    <item>Dueño</item>
+</string-array>
