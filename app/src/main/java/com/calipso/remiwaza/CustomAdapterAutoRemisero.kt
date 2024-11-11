@@ -1,57 +1,57 @@
 package com.calipso.remiwaza
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
-class MyAdapter(private val listCarro: java.util.ArrayList<ListaAutos>):
+class MyAdapter(private val listCarro: ArrayList<ParametrosAutos>, private val context: Context) :
     RecyclerView.Adapter<MyAdapter.CustomViewHolder>() {
 
-    // ViewHolder: contiene las vistas para cada item
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemName: TextView = itemView.findViewById(R.id.itemName)
-        val itemLastName: TextView = itemView.findViewById(R.id.itemLastName)
-        val itemState: TextView = itemView.findViewById(R.id.itemState)
+        val itemModel: TextView = itemView.findViewById(R.id.itemModel)
+        val itemMarca: TextView = itemView.findViewById(R.id.itemMarca)
+        val itemColor: TextView = itemView.findViewById(R.id.itemColor)
     }
 
-    // Infla el diseño de cada elemento
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.listview_carro_remisero, parent, false)
         return CustomViewHolder(view)
     }
 
-    // Conecta los datos a las vistas
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val currentItem = listCarro[position]
-        holder.itemName.text = currentItem.Model
-        holder.itemLastName.text = currentItem.Color
-        holder.itemState.text = currentItem.Name
+        holder.itemModel.text = currentItem.Model
+        holder.itemColor.text = currentItem.Color
+        holder.itemMarca.text = currentItem.Marca
 
-        // Cambia el color del fondo según el estado de "isActive"
+        // Configura el color de fondo según el estado de "isActive"
         if (currentItem.StateA) {
             holder.itemView.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.itemView.context,
-                    R.color.stateGreen
-                )
-            )  // Verde
+                ContextCompat.getColor(holder.itemView.context, R.color.stateGreen)
+            )
         } else {
             holder.itemView.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.itemView.context,
-                    R.color.stateRed
-                )
-            )  // Rojo
+                ContextCompat.getColor(holder.itemView.context, R.color.stateRed)
+            )
+        }
+
+        // Agrega el OnClickListener para iniciar la nueva actividad
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ActivityStateRemisero::class.java)
+            intent.putExtra("model", currentItem.Model)
+            intent.putExtra("marca", currentItem.Marca)
+            intent.putExtra("color", currentItem.Color)
+            context.startActivity(intent)
         }
     }
 
-    // Retorna el tamaño de la lista de datos
-    override fun getItemCount() = listCarro.size
+    override fun getItemCount(): Int {
+        return listCarro.size
+    }
 }

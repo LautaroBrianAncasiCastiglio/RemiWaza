@@ -14,7 +14,7 @@
         android:paddingBottom="10dp"
         android:text="Name"
         android:textColor="#fff"
-        android:textSize="20sp"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,10 +27,23 @@
         android:paddingBottom="10dp"
         android:text="LastName"
         android:textColor="#fff"
-        android:textSize="18sp"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemName" />
+
+    <TextView
+        android:id="@+id/itemCar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:text="Model Car"
+        android:textColor="#fff"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemLastName" />
 
     <TextView
         android:id="@+id/itemState"
@@ -39,8 +52,8 @@
         android:gravity="center"
         android:text="State"
         android:textColor="#fff"
-        android:textSize="18sp"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemLastName" />
+        app:layout_constraintTop_toBottomOf="@+id/itemCar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

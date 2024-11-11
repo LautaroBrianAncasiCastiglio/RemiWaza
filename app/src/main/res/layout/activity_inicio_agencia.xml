@@ -8,6 +8,10 @@
     tools:context=".ActivityInicioAgencia"
     android:background="@drawable/fondo_degradado">
 
+    <include
+        layout="@layout/header_agencia"
+        android:id="@+id/customHeader" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listaEmpleados"
         android:layout_width="407dp"

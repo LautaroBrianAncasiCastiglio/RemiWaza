@@ -5,6 +5,100 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityModificarAgencia">
+    tools:context=".ActivityModificarRemisero"
+    android:background="@drawable/fondo_degradado">
 
+    <include
+        layout="@layout/header_agencia"
+        android:id="@+id/customHeader" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/edificio_de_oficinas" />
+
+    <EditText
+        android:id="@+id/textCalleModifi"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/border_inputs"
+        android:padding="5dp"
+        android:text="Calle"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+    <EditText
+        android:id="@+id/AlturaModifi"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/border_inputs"
+        android:padding="5dp"
+        android:text="Altura"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCalleModifi" />
+
+    <EditText
+        android:id="@+id/textMailModifi"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/border_inputs"
+        android:padding="5dp"
+        android:text="Correo electronico"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AlturaModifi" />
+
+    <EditText
+        android:id="@+id/textPasswordModifi"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/border_inputs"
+        android:padding="5dp"
+        android:text="Contraseña"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textMailModifi" />
+
+    <Button
+        android:id="@+id/btnCancelarModificación"
+        android:layout_width="191dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="50dp"
+        android:text="Cancelar"
+        android:textSize="23sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPasswordModifi" />
+
+
+
+    <Button
+        android:id="@+id/btnReturn"
+        android:layout_width="191dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="50dp"
+        android:text="Regresar"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPasswordModifi" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,60 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityBuscarRemisero">
+    tools:context=".ActivityBucarRemisero"
+    android:background="@drawable/fondo_degradado">
+
+    <include
+        layout="@layout/header_agencia"
+        android:id="@+id/customHeader" />
+
+    <EditText
+        android:id="@+id/seachRemisero"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/border_inputs"
+        android:padding="5dp"
+        android:text="introducir mail"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customHeader" />
+
+    <Button
+        android:id="@+id/btnSearchUser"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:text="Buscar Usuario"
+        app:layout_constraintEnd_toEndOf="@+id/seachRemisero"
+        app:layout_constraintStart_toStartOf="@+id/seachRemisero"
+        app:layout_constraintTop_toBottomOf="@+id/seachRemisero" />
+
+    <TextView
+        android:id="@+id/textUserResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:padding="20dp"
+        android:text="Resultado de la búsqueda"
+        android:background="@drawable/border_inputs"
+        android:textColor="@android:color/white"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSearchUser" />
+
+    <Button
+        android:id="@+id/btnAddToAgencia"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:text="Agregar a Agencia"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textUserResult" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

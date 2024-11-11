@@ -19,7 +19,7 @@
         app:srcCompat="@drawable/usuario" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/textNameRemisero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/textLastNameRemisero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -46,10 +46,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintTop_toBottomOf="@+id/textNameRemisero" />
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/textMailRemisero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -62,10 +62,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintTop_toBottomOf="@+id/textLastNameRemisero" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/textPasswordRemisero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -77,10 +77,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+        app:layout_constraintTop_toBottomOf="@+id/textMailRemisero" />
 
     <Button
-        android:id="@+id/btnRegistro"
+        android:id="@+id/btnRegistroRemisero"
         android:layout_width="191dp"
         android:layout_height="53dp"
         android:layout_marginBottom="75dp"
@@ -99,7 +99,7 @@
         android:layout_marginBottom="10dp"
         android:text="iniciar sesion"
         android:textColor="@color/borderColor"
-        app:layout_constraintBottom_toTopOf="@+id/btnRegistro"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegistroRemisero"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -111,6 +111,6 @@
         android:layout_marginBottom="10dp"
         android:text="soy agencia"
         android:textColor="@color/borderColor"
-        app:layout_constraintBottom_toTopOf="@+id/btnRegistro"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegistroRemisero"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

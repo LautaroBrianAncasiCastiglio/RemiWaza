@@ -19,7 +19,7 @@
         app:srcCompat="@drawable/usuario" />
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/textMailRemisero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="90dp"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/textPasswordRemisero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
@@ -47,10 +47,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+        app:layout_constraintTop_toBottomOf="@+id/textMailRemisero" />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnLoginRemisero"
         android:layout_width="191dp"
         android:layout_height="53dp"
         android:layout_marginBottom="10dp"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/textPasswordRemisero" />
 
     <Button
         android:id="@+id/btnRegistro"
@@ -70,7 +70,7 @@
         android:layout_marginBottom="8dp"
         android:text="registrar cuenta"
         android:textColor="@color/borderColor"
-        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginRemisero"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -82,7 +82,7 @@
         android:layout_marginBottom="10dp"
         android:text="soy agencia"
         android:textColor="@color/borderColor"
-        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginRemisero"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,33 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityListCarAgencia">
+    android:background="@drawable/fondo_degradado"
+    tools:context=".ActivityCarRemisero">
+
+    <include
+        layout="@layout/header_remisero"
+        android:id="@+id/customHeader" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listCarAgencia"
+        android:layout_width="match_parent"
+        android:layout_height="559dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/addCar"
+        android:layout_width="340dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="100dp"
+        android:text="Agregar Auto"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

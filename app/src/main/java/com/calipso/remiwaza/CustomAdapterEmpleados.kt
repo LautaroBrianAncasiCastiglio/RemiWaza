@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-class CustomAdapterEmpleados(private val dataList: List<ListEmpleados>) :
+class CustomAdapterEmpleados(private val dataList: List<ParametrosEmpleados>) :
     RecyclerView.Adapter<CustomAdapterEmpleados.CustomViewHolder>() {
 
     // ViewHolder: contiene las vistas para cada item

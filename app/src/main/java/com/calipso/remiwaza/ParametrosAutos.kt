@@ -1,8 +1,8 @@
 package com.calipso.remiwaza
 
-data class ListaAutos(
+data class ParametrosAutos(
     val Model:String,
+    val Marca:String,
     val Color:String,
-    val Name:String,
     val StateA:Boolean
 )

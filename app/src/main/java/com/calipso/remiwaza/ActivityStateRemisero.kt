@@ -1,8 +1,10 @@
 package com.calipso.remiwaza
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,17 @@ class ActivityStateRemisero : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val userButton: LinearLayout = findViewById(R.id.btnCount)
+        userButton.setOnClickListener {
+            val intent = Intent(this, ActivityPerfilAgencia::class.java)
+            startActivity(intent)
+        }
+        val agenciaButton: LinearLayout = findViewById(R.id.btnAgencia)
+        agenciaButton.setOnClickListener {
+            val intent = Intent(this, ActivityInicioAgencia::class.java)
+            startActivity(intent)
+        }
+
         val switchButton : Button = findViewById(R.id.buttonState)
         val textState : TextView = findViewById(R.id.textState)
 

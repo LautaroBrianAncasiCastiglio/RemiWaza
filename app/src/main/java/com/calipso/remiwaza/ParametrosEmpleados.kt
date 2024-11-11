@@ -1,6 +1,6 @@
 package com.calipso.remiwaza
 
-data class ListEmpleados(
+data class ParametrosEmpleados(
     val Name : String,
     val LastName : String,
     val State : String,

@@ -13,6 +13,21 @@
         android:theme="@style/Theme.RemiWaza"
         tools:targetApi="31">
         <activity
+            android:name=".ActivityPerfilAgencia"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityModificarRemisero"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityModificarAgencia"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityListCarAgencia"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityBuscarRemisero"
+            android:exported="false" />
+        <activity
             android:name=".ActivityInicioAgencia"
             android:exported="false" />
         <activity

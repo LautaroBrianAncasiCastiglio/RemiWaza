@@ -1,45 +1,56 @@
-AuthHelper.loginUser("correo@example.com", "contraseña")
+package com.calipso.remiwaza
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DatabaseReference
 
-fun loginUser(email: String, password: String) {
-    auth = FirebaseAuth.getInstance()
-    database = FirebaseDatabase.getInstance().getReference("users")
+class LoginActivity : AppCompatActivity() {
 
-    auth.signInWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Obtener el UID del usuario autenticado
-                val userId = auth.currentUser?.uid
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
-                userId?.let {
-                    // Obtener el tipo de usuario desde Realtime Database
-                    database.child(it).get().addOnSuccessListener { dataSnapshot ->
-                        if (dataSnapshot.exists()) {
-                            val userType = dataSnapshot.child("userType").getValue(String::class.java)
+    fun loginUser(email: String, password: String) {
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().getReference("users")
 
-                            when (userType) {
-                                "driver" -> {
-                                    // Redirigir a la vista del remisero
-                                    Log.d("Login", "Usuario es un remisero.")
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Obtener el UID del usuario autenticado
+                    val userId = auth.currentUser?.uid
+
+                    userId?.let {
+                        // Obtener el tipo de usuario desde Realtime Database
+                        database.child(it).get().addOnSuccessListener { dataSnapshot ->
+                            if (dataSnapshot.exists()) {
+                                val userType = dataSnapshot.child("userType").getValue(String::class.java)
+
+                                when (userType) {
+                                    "driver" -> {
+                                        // Redirigir a la vista del remisero
+                                        Log.d("Login", "Usuario es un remisero.")
+                                    }
+                                    "owner" -> {
+                                        // Redirigir a la vista del dueño
+                                        Log.d("Login", "Usuario es el dueño de la remisería.")
+                                    }
+                                    else -> {
+                                        Log.d("Login", "Tipo de usuario desconocido.")
+                                    }
                                 }
-                                "owner" -> {
-                                    // Redirigir a la vista del dueño
-                                    Log.d("Login", "Usuario es el dueño de la remisería.")
-                                }
-                                else -> {
-                                    Log.d("Login", "Tipo de usuario desconocido.")
-                                }
+                            } else {
+                                Log.e("Login", "No se encontraron datos del usuario en la base de datos.")
                             }
-                        } else {
-                            Log.e("Login", "No se encontraron datos del usuario en la base de datos.")
+                        }.addOnFailureListener { e ->
+                            Log.e("Login", "Error al obtener datos del usuario: ${e.message}")
                         }
-                    }.addOnFailureListener { e ->
-                        Log.e("Login", "Error al obtener datos del usuario: ${e.message}")
                     }
+                } else {
+                    // Manejo de errores en el login
+                    Log.e("Login", "Error en el login: ${task.exception?.message}")
                 }
-            } else {
-                // Manejo de errores en el login
-                Log.e("Login", "Error en el login: ${task.exception?.message}")
             }
-        }
+    }
 }
