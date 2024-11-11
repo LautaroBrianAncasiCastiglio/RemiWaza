@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +18,19 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        // Verificar si ya hay un usuario autenticado
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            // El usuario está autenticado, redirigir a la página principal
+            val intent = Intent(this, ActivityInicioRemisero::class.java)
+            startActivity(intent)
+            finish() // Finaliza la actividad de login
+        } else {
+            // Si no hay usuario autenticado, permitir que se loguee
+            val intent = Intent(this, ActivityLoginRemisero::class.java)
+            startActivity(intent)
         }
 
         showScreen()

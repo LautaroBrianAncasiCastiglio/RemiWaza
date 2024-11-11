@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.calipso.remiwaza" />
+                  <option name="mobileSdkAppId" value="1:652203118890:android:a238ce5137b866ab3ace53" />
+                  <option name="projectId" value="remiwaza-oficial" />
+                  <option name="projectNumber" value="652203118890" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

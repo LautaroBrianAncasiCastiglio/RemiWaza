@@ -6,14 +6,20 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class ActivityStateRemisero : AppCompatActivity() {
     private var buttonPress = true
+    private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,21 +40,42 @@ class ActivityStateRemisero : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val switchButton : Button = findViewById(R.id.buttonState)
-        val textState : TextView = findViewById(R.id.textState)
+        // Inicializar Firebase Auth y DatabaseReference
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().getReference("drivers")
 
-        switchButton.setOnClickListener{
+        val switchButton: Button = findViewById(R.id.buttonState)
+        val textState: TextView = findViewById(R.id.textState)
+
+        switchButton.setOnClickListener {
             if (buttonPress) {
-                // Si el empleado ya está dentro, cambia a "No" y color rojo
+                // Cambiar estado a "No Disponible"
+                updateDriverState("not available")
                 textState.text = "No Disponible"
                 switchButton.setBackgroundColor(ContextCompat.getColor(this, R.color.stateRed))
                 buttonPress = false
             } else {
-                // Si el empleado no está dentro, cambia a "Sí" y color verde
+                // Cambiar estado a "Disponible"
+                updateDriverState("available")
                 textState.text = "Disponible"
                 switchButton.setBackgroundColor(ContextCompat.getColor(this, R.color.stateGreen))
                 buttonPress = true
             }
+        }
+    }
+
+    private fun updateDriverState(state: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            database.child(userId).child("state").setValue(state)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Estado actualizado correctamente.", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error al actualizar el estado: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, "Error: Usuario no autenticado.", Toast.LENGTH_SHORT).show()
         }
     }
 }

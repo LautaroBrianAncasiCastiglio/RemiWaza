@@ -70,6 +70,8 @@ class ActivityRegistroRemisero : AppCompatActivity() {
     }
 
     private fun registerUser(name: String, lastName: String, email: String, password: String) {
+
+        val intent = Intent(this, ActivityInicioRemisero::class.java)
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -86,9 +88,7 @@ class ActivityRegistroRemisero : AppCompatActivity() {
                         database.child(it).setValue(userData)
                             .addOnSuccessListener {
                                 Toast.makeText(this, "Usuario registrado con éxito.", Toast.LENGTH_SHORT).show()
-
                                 // Redirigir al usuario a la pantalla de inicio
-                                val intent = Intent(this, ActivityInicioRemisero::class.java)
                                 startActivity(intent)
                                 finish() // Finaliza la actividad de registro para que no pueda volver a ella
                             }
@@ -98,7 +98,9 @@ class ActivityRegistroRemisero : AppCompatActivity() {
                     }
                 } else {
                     Toast.makeText(this, "Error en el registro: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    startActivity(intent)
                 }
             }
+
     }
 }
