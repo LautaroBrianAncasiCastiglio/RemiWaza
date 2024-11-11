@@ -30,16 +30,28 @@ class RegisterActivity : AppCompatActivity() {
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
 
         registerButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
+    val email = emailEditText.text.toString()
+    val password = passwordEditText.text.toString()
+    val name = nameEditText.text.toString()
+    val role = "driver"  // o el rol que corresponda
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                registerUser(email, password)
+    if (email.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty()) {
+        AuthHelper.registerUser(email, password, name, role) { success ->
+            if (success) {
+                val intent = Intent(this, ActivityInicioRemisero::class.java)
+                startActivity(intent)
+                finish()
             } else {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Registro fallido", Toast.LENGTH_SHORT).show()
             }
         }
+    } else {
+        Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
     }
+}
+
+
+    
 
     private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
