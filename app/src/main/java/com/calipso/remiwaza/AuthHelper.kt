@@ -1,5 +1,5 @@
 //Archivo para la lógica de autenticación:
-package com.tu_paquete.remiwaza
+package com.calipso.remiwaza
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
