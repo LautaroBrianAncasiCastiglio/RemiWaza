@@ -1,44 +1,78 @@
 AuthHelper.registerUser("correo@example.com", "contraseña", "Nombre", "driver")
 
+package com.calipso.remiwaza
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 
-// Variables de Firebase
-private lateinit var auth: FirebaseAuth
-private lateinit var database: DatabaseReference
+class RegisterActivity : AppCompatActivity() {
 
-fun registerUser(email: String, password: String, displayName: String, userType: String) {
-    auth = FirebaseAuth.getInstance()
-    database = FirebaseDatabase.getInstance().getReference("users")
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
-    auth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Obtener el UID del usuario registrado
-                val userId = auth.currentUser?.uid
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_register)
 
-                // Crear el objeto de datos del usuario
-                val userData = mapOf(
-                    "email" to email,
-                    "displayName" to displayName,
-                    "userType" to userType  // Puede ser "driver" o "owner"
-                )
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
-                // Guardar los datos del usuario en Realtime Database
-                userId?.let {
-                    database.child(it).setValue(userData)
-                        .addOnSuccessListener {
-                            // Registro exitoso
-                            Log.d("Register", "Usuario registrado y datos guardados.")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Register", "Error al guardar los datos del usuario: ${e.message}")
-                        }
-                }
+        val registerButton = findViewById<Button>(R.id.btnRegister)
+        val emailEditText = findViewById<EditText>(R.id.emailEditText)
+        val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
+
+        registerButton.setOnClickListener {
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                registerUser(email, password)
             } else {
-                // Manejo de errores en el registro
-                Log.e("Register", "Error en el registro: ${task.exception?.message}")
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun registerUser(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    saveUserToFirestore(user)
+                    updateUI(user)
+                } else {
+                    Log.w("RegisterActivity", "createUserWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Registration failed.", Toast.LENGTH_SHORT).show()
+                    updateUI(null)
+                }
+            }
+    }
+
+    private fun saveUserToFirestore(user: FirebaseUser?) {
+        user?.let {
+            val userMap = hashMapOf(
+                "uid" to user.uid,
+                "email" to user.email
+            )
+            db.collection("users").document(user.uid).set(userMap)
+                .addOnSuccessListener { Log.d("RegisterActivity", "User added to Firestore") }
+                .addOnFailureListener { e -> Log.w("RegisterActivity", "Error adding user", e) }
+        }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            val intent = Intent(this, ActivityInicioRemisero::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
 }
