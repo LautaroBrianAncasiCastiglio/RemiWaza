@@ -13,26 +13,28 @@ class ActivityRegistroRemisero : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_registro_remisero)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val buttonRegistro= findViewById<Button>(R.id.btnRegistro)
+
+        val buttonRegistro = findViewById<Button>(R.id.btnRegistro)
         val buttonLogin = findViewById<Button>(R.id.btnLogin)
         val buttonAgencia = findViewById<Button>(R.id.btnAgencia)
 
-        buttonRegistro.setOnClickListener{
-            val intent1= Intent(applicationContext, ActivityInicioRemisero::class.java)
-            startActivity(intent1)
+        buttonRegistro.setOnClickListener {
+            val intent = Intent(applicationContext, RegisterActivity::class.java)
+            startActivity(intent)
         }
-        buttonLogin.setOnClickListener{
-            val intent2= Intent(applicationContext, ActivityLoginRemisero::class.java)
-            startActivity(intent2)
+        buttonLogin.setOnClickListener {
+            val intent = Intent(applicationContext, ActivityLoginRemisero::class.java)
+            startActivity(intent)
         }
-        buttonAgencia.setOnClickListener{
-            val intent3= Intent(applicationContext, ActivityRegistroAgencia::class.java)
-            startActivity(intent3)
+        buttonAgencia.setOnClickListener {
+            val intent = Intent(applicationContext, ActivityRegistroAgencia::class.java)
+            startActivity(intent)
         }
     }
 }
