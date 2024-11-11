@@ -29,10 +29,12 @@ class ActivityMensajeInstructivo3 : AppCompatActivity() {
         buttonRemisero.setOnClickListener{
             val intent2= Intent(applicationContext, ActivityRegistroRemisero::class.java)
             startActivity(intent2)
+            finish()
         }
         buttonAgencia.setOnClickListener{
             val intent3= Intent(applicationContext, ActivityRegistroAgencia::class.java)
             startActivity(intent3)
+            finish()
         }
     }
 }

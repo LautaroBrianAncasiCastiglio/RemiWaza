@@ -43,7 +43,7 @@ class ActivityRegistroRemisero : AppCompatActivity() {
         }
 
         auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance().getReference("users")
+        database = FirebaseDatabase.getInstance().getReference("drivers")
 
         val textName = findViewById<EditText>(R.id.textNameRemisero)
         val textLastName = findViewById<EditText>(R.id.textLastNameRemisero)
@@ -77,13 +77,20 @@ class ActivityRegistroRemisero : AppCompatActivity() {
                     val userData = mapOf(
                         "name" to name,
                         "lastName" to lastName,
-                        "email" to email
+                        "email" to email,
+                        "password" to password,
+                        "state" to "not available"
                     )
 
                     userId?.let {
                         database.child(it).setValue(userData)
                             .addOnSuccessListener {
                                 Toast.makeText(this, "Usuario registrado con éxito.", Toast.LENGTH_SHORT).show()
+
+                                // Redirigir al usuario a la pantalla de inicio
+                                val intent = Intent(this, ActivityInicioRemisero::class.java)
+                                startActivity(intent)
+                                finish() // Finaliza la actividad de registro para que no pueda volver a ella
                             }
                             .addOnFailureListener { e ->
                                 Toast.makeText(this, "Error al guardar los datos: ${e.message}", Toast.LENGTH_SHORT).show()
