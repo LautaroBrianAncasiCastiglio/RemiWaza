@@ -15,7 +15,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listaEmpleados"
         android:layout_width="407dp"
-        android:layout_height="423dp"
+        android:layout_height="450dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,11 +26,23 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="110dp"
         android:text="Empleados"
         android:textColor="@color/white"
         android:textSize="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnAgregarEmpleados"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agregar empleados"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/listaEmpleados"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

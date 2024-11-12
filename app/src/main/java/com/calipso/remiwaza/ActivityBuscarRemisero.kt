@@ -22,7 +22,13 @@ class ActivityBucarRemisero : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscar_remisero)
 
-        database = FirebaseDatabase.getInstance().getReference("users")
+        database = FirebaseDatabase.getInstance().getReference("users") // Refiere a la tabla 'users'
+        searchField = findViewById(R.id.seachRemisero)
+        searchButton = findViewById(R.id.btnSearchUser)
+        resultText = findViewById(R.id.textUserResult)
+        addButton = findViewById(R.id.btnAddToAgencia)
+
+        database = FirebaseDatabase.getInstance().getReference("users")  // Se asume que los usuarios están bajo "users"
         searchField = findViewById(R.id.seachRemisero)
         searchButton = findViewById(R.id.btnSearchUser)
         resultText = findViewById(R.id.textUserResult)
@@ -32,6 +38,7 @@ class ActivityBucarRemisero : AppCompatActivity() {
         val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
         companyName = sharedPref.getString("companyName", "") ?: ""
 
+        // Acción de búsqueda de usuario por correo
         searchButton.setOnClickListener {
             val email = searchField.text.toString().trim()
             if (email.isEmpty()) {
@@ -41,6 +48,7 @@ class ActivityBucarRemisero : AppCompatActivity() {
             }
         }
 
+        // Acción de agregar el usuario a la agencia
         addButton.setOnClickListener {
             val userId = addButton.tag as? String
             if (userId != null) {
@@ -51,20 +59,21 @@ class ActivityBucarRemisero : AppCompatActivity() {
         }
     }
 
+    // Método para buscar al remisero por su correo electrónico
     private fun searchUserByEmail(email: String) {
         database.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        val userId = userSnapshot.key
+                        val userId = userSnapshot.key  // Obtiene el ID del usuario
                         val userName = userSnapshot.child("name").getValue(String::class.java)
                         resultText.text = "Usuario encontrado: $userName"
-                        addButton.tag = userId
-                        addButton.visibility = Button.VISIBLE
+                        addButton.tag = userId  // Asocia el ID del usuario con el botón
+                        addButton.visibility = Button.VISIBLE  // Muestra el botón de agregar
                     }
                 } else {
                     resultText.text = "No se encontró al usuario."
-                    addButton.visibility = Button.GONE
+                    addButton.visibility = Button.GONE  // Oculta el botón si no se encuentra el usuario
                 }
             }
 
@@ -74,14 +83,18 @@ class ActivityBucarRemisero : AppCompatActivity() {
         })
     }
 
+    // Método para agregar el remisero a la agencia
     private fun addUserToCompany(userId: String) {
-        // Usar el nombre de la agencia almacenado en SharedPreferences
+        // Verificar que el nombre de la agencia esté disponible
         if (companyName.isNotEmpty()) {
-            val companyDriverRef = FirebaseDatabase.getInstance().getReference("company_driver_$companyName")
+            // Referencia a la nueva tabla donde se almacenan los remiseros de la agencia
+            val companyDriverRef = FirebaseDatabase.getInstance().getReference("agency_drivers")
             val data = mapOf(
                 "companyName" to companyName,
-                "driverId" to userId
+                "driverId" to userId  // Asociamos el ID del remisero con la agencia
             )
+
+            // Guardar los datos en la base de datos bajo la tabla "agency_drivers"
             companyDriverRef.push().setValue(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Usuario agregado a la agencia.", Toast.LENGTH_SHORT).show()

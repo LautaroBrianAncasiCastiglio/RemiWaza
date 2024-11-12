@@ -81,7 +81,8 @@ class ActivityRegistroRemisero : AppCompatActivity() {
                         "lastName" to lastName,
                         "email" to email,
                         "password" to password,
-                        "state" to "not available"
+                        "state" to "not available",
+                        "type" to "remisero"
                     )
 
                     userId?.let {

@@ -2,6 +2,7 @@ package com.calipso.remiwaza
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -25,12 +26,17 @@ class ActivityInicioAgencia : AppCompatActivity() {
             insets
         }
 
-        val userButton: LinearLayout = findViewById(R.id.btnCount)
+        val button =findViewById<Button>(R.id.btnAgregarEmpleados)
+        button.setOnClickListener{
+            val intent1= Intent(applicationContext, ActivityBucarRemisero::class.java)
+            startActivity(intent1)
+        }
+        val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)
         userButton.setOnClickListener {
             val intent = Intent(this, ActivityPerfilAgencia::class.java)
             startActivity(intent)
         }
-        val agenciaButton: LinearLayout = findViewById(R.id.btnAgencia)
+        val agenciaButton: LinearLayout = findViewById(R.id.btnEmpleados)
         agenciaButton.setOnClickListener {
             val intent = Intent(this, ActivityInicioAgencia::class.java)
             startActivity(intent)

@@ -28,12 +28,12 @@ class ActivityInicioRemisero : AppCompatActivity() {
             val intent1= Intent(applicationContext, ActivityStateRemisero::class.java)
             startActivity(intent1)
         }
-        val userButton: LinearLayout = findViewById(R.id.btnCount)
+        val userButton: LinearLayout = findViewById(R.id.btnCountRemisero)
         userButton.setOnClickListener {
             val intent = Intent(this, ActivityPerfilRemisero::class.java)
             startActivity(intent)
         }
-        val agenciaButton: LinearLayout = findViewById(R.id.btnAgencia)
+        val agenciaButton: LinearLayout = findViewById(R.id.btnAgenciaRemisero)
         agenciaButton.setOnClickListener {
             val intent = Intent(this, ActivityInicioRemisero::class.java)
             startActivity(intent)

@@ -58,54 +58,19 @@ class ActivityLoginAgencia : AppCompatActivity() {
     }
 
     private fun loginAgency(email: String, password: String) {
+
+        val intent = Intent(this, ActivityInicioAgencia::class.java)
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Si el login es exitoso, obtener el nombre de la agencia
-                    getAgencyName(email) { companyName ->
-                        // Guardar el nombre de la agencia en SharedPreferences
-                        saveCompanyNameInSharedPreferences(companyName)
-
                         // Redirigir a la página principal de la agencia
-                        val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish() // Cerrar la actividad de login para que no regrese
-                    }
                 } else {
                     // Si falla el login, muestra un mensaje de error
                     val errorMessage = task.exception?.message ?: "Error desconocido"
                     Toast.makeText(this, "Error en el login: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private fun getAgencyName(email: String, callback: (String?) -> Unit) {
-        // Consulta en Firebase para obtener el nombre de la agencia usando el correo
-        val database = FirebaseDatabase.getInstance().getReference("agencias")
-        database.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : com.google.firebase.database.ValueEventListener {
-            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (agencySnapshot in snapshot.children) {
-                        val companyName = agencySnapshot.child("name").getValue(String::class.java)
-                        callback(companyName)
-                    }
-                } else {
-                    callback(null)
-                }
-            }
-
-            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
-                Toast.makeText(this@ActivityLoginAgencia, "Error al obtener el nombre de la agencia: ${error.message}", Toast.LENGTH_SHORT).show()
-                callback(null)
-            }
-        })
-    }
-
-    // Guardar el nombre de la agencia en SharedPreferences
-    private fun saveCompanyNameInSharedPreferences(companyName: String?) {
-        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("name", companyName)
-        editor.apply()
     }
 }

@@ -18,86 +18,94 @@ class ActivityRegistroAgencia : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_registro_agencia)
+
+        // Ajuste de las barras de sistema (Edge to Edge)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val buttonLogin = findViewById<Button>(R.id.btnLogin)
-        val buttonRemisero = findViewById<Button>(R.id.btnRemisero)
 
-        buttonLogin.setOnClickListener{
-            val intent2= Intent(applicationContext, ActivityLoginAgencia::class.java)
-            startActivity(intent2)
-        }
-        buttonRemisero.setOnClickListener{
-            val intent3= Intent(applicationContext, ActivityRegistroRemisero::class.java)
-            startActivity(intent3)
-        }
-
-
+        // Inicializar Firebase
         auth = FirebaseAuth.getInstance()
-        // Referencia a la tabla 'agencies' en Firebase
-        var database = FirebaseDatabase.getInstance().getReference("agencias")
+        database = FirebaseDatabase.getInstance().getReference("owners") // Referencia a la tabla 'companies' en Firebase
 
+        // Referencias a las vistas
         val textName = findViewById<EditText>(R.id.textNameAgencia)
         val textMail = findViewById<EditText>(R.id.textMailAgencia)
         val textPassword = findViewById<EditText>(R.id.textPasswordAgencia)
         val btnRegistro = findViewById<Button>(R.id.btnRegistroAgencia)
+        val buttonLogin = findViewById<Button>(R.id.btnLogin)
+        val buttonRemisero = findViewById<Button>(R.id.btnRemisero)
 
+        // Navegar a la pantalla de Login o de Registro Remisero
+        buttonLogin.setOnClickListener{
+            val intent2 = Intent(applicationContext, ActivityLoginAgencia::class.java)
+            startActivity(intent2)
+        }
+
+        buttonRemisero.setOnClickListener{
+            val intent3 = Intent(applicationContext, ActivityRegistroRemisero::class.java)
+            startActivity(intent3)
+        }
+
+        // Registrar agencia
         btnRegistro.setOnClickListener {
             val name = textName.text.toString().trim()
             val email = textMail.text.toString().trim()
             val password = textPassword.text.toString().trim()
 
-            // Validación de los campos
+            // Validaciones
             if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
             } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                // Validar el formato del correo electrónico
                 Toast.makeText(this, "El correo electrónico no es válido.", Toast.LENGTH_SHORT).show()
+            } else if (password.length < 6) {
+                Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres.", Toast.LENGTH_SHORT).show()
             } else {
-                // Llamar a la función de registro
+                // Registrar la agencia
                 registerAgency(name, email, password)
             }
         }
     }
 
+    // Función para registrar la agencia
     private fun registerAgency(name: String, email: String, password: String) {
-        // Crear el usuario con email y contraseña
+        val intent = Intent(this, ActivityInicioAgencia::class.java)
+
+        // Crear el usuario en Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid
                     val agencyData = mapOf(
                         "name" to name,
-                        "email" to email
+                        "email" to email,
+                        "password" to password,
+                        "type" to "agencia"
                     )
 
                     userId?.let {
-                        // Guardar los datos de la agencia en Firebase en la tabla 'agencies'
+                        // Guardar los datos de la agencia en Firebase Realtime Database
                         database.child(it).setValue(agencyData)
                             .addOnSuccessListener {
                                 Toast.makeText(this, "Agencia registrada con éxito.", Toast.LENGTH_SHORT).show()
-                                val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-                                val editor = sharedPref.edit()
-                                editor.putString("name", name) // Guarda el nombre de la agencia
-                                editor.apply()
-                                // Redirigir a la pantalla de login o inicio
-                                val intent = Intent(this, ActivityInicioAgencia::class.java)
+                                // Redirigir al inicio de la agencia
                                 startActivity(intent)
-                                finish() // Finaliza la actividad de registro para que no vuelva atrás
+                                finish() // Finaliza la actividad de registro
                             }
                             .addOnFailureListener { e ->
+                                // Manejar error al guardar los datos en la base de datos
                                 Toast.makeText(this, "Error al guardar los datos: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }
                 } else {
-                    // Si el registro falla
+                    // Manejar error en la creación del usuario
                     Toast.makeText(this, "Error en el registro: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }

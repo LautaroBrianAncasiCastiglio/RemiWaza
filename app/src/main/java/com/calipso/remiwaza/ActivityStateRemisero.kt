@@ -29,12 +29,12 @@ class ActivityStateRemisero : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val userButton: LinearLayout = findViewById(R.id.btnCount)
+        val userButton: LinearLayout = findViewById(R.id.btnCountRemisero)
         userButton.setOnClickListener {
-            val intent = Intent(this, ActivityPerfilAgencia::class.java)
+            val intent = Intent(this, ActivityPerfilRemisero::class.java)
             startActivity(intent)
         }
-        val agenciaButton: LinearLayout = findViewById(R.id.btnAgencia)
+        val agenciaButton: LinearLayout = findViewById(R.id.btnAgenciaRemisero)
         agenciaButton.setOnClickListener {
             val intent = Intent(this, ActivityInicioAgencia::class.java)
             startActivity(intent)
