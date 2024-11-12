@@ -7,14 +7,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 
-class ActivityBucarRemisero : AppCompatActivity() {
+class ActivityBuscarRemisero : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var searchField: EditText
     private lateinit var searchButton: Button
-    private lateinit var resultText: TextView
+    private lateinit var resultRecyclerView: RecyclerView
     private lateinit var addButton: Button
     private lateinit var companyName: String
 
@@ -22,23 +24,19 @@ class ActivityBucarRemisero : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscar_remisero)
 
-        database = FirebaseDatabase.getInstance().getReference("users") // Refiere a la tabla 'users'
-        searchField = findViewById(R.id.seachRemisero)
+        database = FirebaseDatabase.getInstance().getReference("users")
+        searchField = findViewById(R.id.searchRemisero)
         searchButton = findViewById(R.id.btnSearchUser)
-        resultText = findViewById(R.id.textUserResult)
+        resultRecyclerView = findViewById(R.id.recyclerUserResults)
         addButton = findViewById(R.id.btnAddToAgencia)
 
-        database = FirebaseDatabase.getInstance().getReference("users")  // Se asume que los usuarios están bajo "users"
-        searchField = findViewById(R.id.seachRemisero)
-        searchButton = findViewById(R.id.btnSearchUser)
-        resultText = findViewById(R.id.textUserResult)
-        addButton = findViewById(R.id.btnAddToAgencia)
-
+        // Configuración del RecyclerView
+        resultRecyclerView.layoutManager = LinearLayoutManager(this)
+        
         // Obtener el nombre de la agencia desde SharedPreferences
         val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
         companyName = sharedPref.getString("companyName", "") ?: ""
 
-        // Acción de búsqueda de usuario por correo
         searchButton.setOnClickListener {
             val email = searchField.text.toString().trim()
             if (email.isEmpty()) {
@@ -48,7 +46,6 @@ class ActivityBucarRemisero : AppCompatActivity() {
             }
         }
 
-        // Acción de agregar el usuario a la agencia
         addButton.setOnClickListener {
             val userId = addButton.tag as? String
             if (userId != null) {
@@ -59,42 +56,39 @@ class ActivityBucarRemisero : AppCompatActivity() {
         }
     }
 
-    // Método para buscar al remisero por su correo electrónico
     private fun searchUserByEmail(email: String) {
         database.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    val usersList = mutableListOf<User>()
                     for (userSnapshot in snapshot.children) {
-                        val userId = userSnapshot.key  // Obtiene el ID del usuario
-                        val userName = userSnapshot.child("name").getValue(String::class.java)
-                        resultText.text = "Usuario encontrado: $userName"
-                        addButton.tag = userId  // Asocia el ID del usuario con el botón
-                        addButton.visibility = Button.VISIBLE  // Muestra el botón de agregar
+                        val userId = userSnapshot.key
+                        val userName = userSnapshot.child("name").getValue(String::class.java) ?: ""
+                        usersList.add(User(userId, userName, email)) // Clase 'User' para almacenar datos
                     }
+                    resultRecyclerView.adapter = UserAdapter(usersList) // Asigna los resultados al adaptador
+                    addButton.tag = usersList.firstOrNull()?.userId // Asocia el ID con el botón si hay resultados
+                    addButton.visibility = if (usersList.isNotEmpty()) Button.VISIBLE else Button.GONE
                 } else {
-                    resultText.text = "No se encontró al usuario."
-                    addButton.visibility = Button.GONE  // Oculta el botón si no se encuentra el usuario
+                    Toast.makeText(this@ActivityBuscarRemisero, "No se encontró al usuario.", Toast.LENGTH_SHORT).show()
+                    addButton.visibility = Button.GONE
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ActivityBucarRemisero, "Error en la búsqueda: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ActivityBuscarRemisero, "Error en la búsqueda: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Método para agregar el remisero a la agencia
     private fun addUserToCompany(userId: String) {
-        // Verificar que el nombre de la agencia esté disponible
         if (companyName.isNotEmpty()) {
-            // Referencia a la nueva tabla donde se almacenan los remiseros de la agencia
             val companyDriverRef = FirebaseDatabase.getInstance().getReference("agency_drivers")
             val data = mapOf(
                 "companyName" to companyName,
-                "driverId" to userId  // Asociamos el ID del remisero con la agencia
+                "driverId" to userId
             )
 
-            // Guardar los datos en la base de datos bajo la tabla "agency_drivers"
             companyDriverRef.push().setValue(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Usuario agregado a la agencia.", Toast.LENGTH_SHORT).show()
@@ -106,4 +100,12 @@ class ActivityBucarRemisero : AppCompatActivity() {
             Toast.makeText(this, "No se pudo obtener el nombre de la agencia.", Toast.LENGTH_SHORT).show()
         }
     }
+}
+
+// Clase 'User' para almacenar datos del usuario
+data class User(val userId: String?, val name: String, val email: String)
+
+// Adaptador para el RecyclerView (simplificado para visualización)
+class UserAdapter(private val usersList: List<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+    // ViewHolder y otros métodos aquí para manejar los elementos de la lista...
 }
