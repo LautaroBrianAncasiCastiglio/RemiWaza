@@ -3,65 +3,68 @@ package com.calipso.remiwaza
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.LinearLayout
-import androidx.activity.enableEdgeToEdge
+import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
 
 class ActivityInicioAgencia : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var customAdapter: CustomAdapterEmpleados
-    private lateinit var dataList: ArrayList<ParametrosEmpleados>
+
+    private lateinit var database: DatabaseReference
+    private lateinit var listViewEmpleados: ListView
+    private lateinit var empleadosAdapter: RemiseroAdapter
+    private lateinit var empleadosList: MutableList<Remisero>
+    private lateinit var btnAgregarEmpleados: Button
+    private lateinit var textViewEmpleados: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_inicio_agencia)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        // Inicializar vistas
+        listViewEmpleados = findViewById(R.id.listaEmpleados)
+        btnAgregarEmpleados = findViewById(R.id.btnAgregarEmpleados)
+        textViewEmpleados = findViewById(R.id.textView7)
+
+        // Configuración de la lista y el adaptador
+        empleadosList = mutableListOf()
+        empleadosAdapter = RemiseroAdapter(this, empleadosList)
+        listViewEmpleados.adapter = empleadosAdapter
+
+        // Inicializar referencia de base de datos
+        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+        val companyName = sharedPref.getString("companyName", "")
+        if (companyName.isNullOrEmpty()) {
+            Toast.makeText(this, "Error al obtener la empresa", Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+            database = FirebaseDatabase.getInstance().getReference("agency_drivers").child(companyName)
+            cargarEmpleados()
         }
 
-        val button =findViewById<Button>(R.id.btnAgregarEmpleados)
-        button.setOnClickListener{
-            val intent1= Intent(applicationContext, ActivityBucarRemisero::class.java)
-            startActivity(intent1)
+        // Configurar el botón de agregar empleados
+        btnAgregarEmpleados.setOnClickListener {
+            startActivity(Intent(this, ActivityBucarRemisero::class.java))
         }
-        val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)
-        userButton.setOnClickListener {
-            val intent = Intent(this, ActivityPerfilAgencia::class.java)
-            startActivity(intent)
-        }
-        val agenciaButton: LinearLayout = findViewById(R.id.btnEmpleados)
-        agenciaButton.setOnClickListener {
-            val intent = Intent(this, ActivityInicioAgencia::class.java)
-            startActivity(intent)
-        }
+    }
 
-        // Inicializa el RecyclerView
-        recyclerView = findViewById(R.id.listaEmpleados)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+    private fun cargarEmpleados() {
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                empleadosList.clear()
+                for (data in snapshot.children) {
+                    val remisero = data.getValue(Remisero::class.java)
+                    if (remisero != null) {
+                        empleadosList.add(remisero)
+                    }
+                }
+                empleadosAdapter.notifyDataSetChanged()
+            }
 
-        // Crear la lista de datos
-        dataList = ArrayList()
-        dataList.add(ParametrosEmpleados("Juan", "Castillo", "Disponible",true))
-        dataList.add(ParametrosEmpleados("Manuel", "Rosas", "Disponible",true))
-        dataList.add(ParametrosEmpleados("Martín", "Juares", "Disponible",true))
-        dataList.add(ParametrosEmpleados("Ezequiel", "Lopez", "Disponible",true))
-        dataList.add(ParametrosEmpleados("Pedro", "Castiglione", "Disponible",true))
-        dataList.add(ParametrosEmpleados("Monica", "Paredes", "Disponible",true))
-        dataList.add(ParametrosEmpleados("Marcelo", "Cuatrano", "No Disponible",false))
-        dataList.add(ParametrosEmpleados("Luciano", "Tello", "No Disponible",false))
-        dataList.add(ParametrosEmpleados("Brian", "Tuillier", "No Disponible",false))
-        dataList.add(ParametrosEmpleados("Lautaro", "Ancasi", "No Disponible",false))
-
-
-        // Configura el adaptador
-        customAdapter = CustomAdapterEmpleados(dataList)
-        recyclerView.adapter = customAdapter
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ActivityInicioAgencia, "Error al cargar empleados: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
