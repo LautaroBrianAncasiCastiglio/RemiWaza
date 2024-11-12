@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.database.*
 
 class ActivityBucarRemisero : AppCompatActivity() {
@@ -21,7 +23,11 @@ class ActivityBucarRemisero : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscar_remisero)
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         database = FirebaseDatabase.getInstance().getReference("users") // Refiere a la tabla 'users'
         searchField = findViewById(R.id.seachRemisero)
         searchButton = findViewById(R.id.btnSearchUser)
@@ -33,10 +39,6 @@ class ActivityBucarRemisero : AppCompatActivity() {
         searchButton = findViewById(R.id.btnSearchUser)
         resultText = findViewById(R.id.textUserResult)
         addButton = findViewById(R.id.btnAddToAgencia)
-
-        // Obtener el nombre de la agencia desde SharedPreferences
-        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-        companyName = sharedPref.getString("companyName", "") ?: ""
 
         // Acción de búsqueda de usuario por correo
         searchButton.setOnClickListener {
