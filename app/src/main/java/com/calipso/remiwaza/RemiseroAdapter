@@ -1,0 +1,40 @@
+package com.calipso.remiwaza
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.TextView
+
+class RemiseroAdapter(private val context: Context, private val remiserosList: List<Remisero>) : BaseAdapter() {
+
+    override fun getCount(): Int {
+        return remiserosList.size
+    }
+
+    override fun getItem(position: Int): Any {
+        return remiserosList[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_remisero, parent, false)
+
+        // Obtener referencias a los TextView en el layout item_remisero
+        val nombreTextView: TextView = view.findViewById(R.id.textNombreRemisero)
+        val estadoTextView: TextView = view.findViewById(R.id.textEstadoRemisero)
+
+        // Obtener el objeto Remisero correspondiente a la posición actual
+        val remisero = remiserosList[position]
+
+        // Establecer los valores de nombre y estado en los TextView
+        nombreTextView.text = remisero.nombre
+        estadoTextView.text = remisero.estado
+
+        return view
+    }
+}
