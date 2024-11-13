@@ -6,19 +6,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
 
 class ActivityBuscarRemisero : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var searchField: EditText
     private lateinit var searchButton: Button
-    private lateinit var resultText: TextView
+    private lateinit var resultRecyclerView: RecyclerView
     private lateinit var addButton: Button
     private lateinit var companyName: String
 
@@ -26,19 +23,19 @@ class ActivityBuscarRemisero : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscar_remisero)
 
-        // Inicializar las vistas
-        searchField = findViewById(R.id.seachRemisero)
+        database = FirebaseDatabase.getInstance().getReference("users")
+        searchField = findViewById(R.id.searchRemisero)
         searchButton = findViewById(R.id.btnSearchUser)
-        resultText = findViewById(R.id.textUserResult)
+        resultRecyclerView = findViewById(R.id.recyclerUserResults)
         addButton = findViewById(R.id.btnAddToAgencia)
 
-        // Inicializar la referencia de la base de datos
-        database = FirebaseDatabase.getInstance().getReference("drivers")
+        // Configuración del RecyclerView
+        resultRecyclerView.layoutManager = LinearLayoutManager(this)
+        
+        // Obtener el nombre de la agencia desde SharedPreferences
+        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+        companyName = sharedPref.getString("companyName", "") ?: ""
 
-        // Obtener el nombre de la agencia (puedes cambiar la forma de obtener este dato según tu lógica)
-        companyName = "owners"
-
-        // Configurar la acción del botón de búsqueda
         searchButton.setOnClickListener {
             val email = searchField.text.toString().trim()
             if (email.isEmpty()) {
@@ -48,7 +45,6 @@ class ActivityBuscarRemisero : AppCompatActivity() {
             }
         }
 
-        // Configurar la acción del botón de agregar
         addButton.setOnClickListener {
             val userId = addButton.tag as? String
             if (userId != null) {
@@ -63,14 +59,18 @@ class ActivityBuscarRemisero : AppCompatActivity() {
         database.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    val usersList = mutableListOf<User>()
                     for (userSnapshot in snapshot.children) {
                         val userId = userSnapshot.key
-                        val userName = userSnapshot.child("name").getValue(String::class.java)
-                        resultText.text = "Usuario encontrado: $userName"
-                        addButton.tag = userId
+                        val userName = userSnapshot.child("name").getValue(String::class.java) ?: ""
+                        usersList.add(User(userId, userName, email)) // Clase 'User' para almacenar datos
                     }
+                    resultRecyclerView.adapter = UserAdapter(usersList) // Asigna los resultados al adaptador
+                    addButton.tag = usersList.firstOrNull()?.userId // Asocia el ID con el botón si hay resultados
+                    addButton.visibility = if (usersList.isNotEmpty()) Button.VISIBLE else Button.GONE
                 } else {
-                    resultText.text = "No se encontró al usuario."
+                    Toast.makeText(this@ActivityBuscarRemisero, "No se encontró al usuario.", Toast.LENGTH_SHORT).show()
+                    addButton.visibility = Button.GONE
                 }
             }
 
@@ -80,17 +80,15 @@ class ActivityBuscarRemisero : AppCompatActivity() {
         })
     }
 
-    private fun addUserToCompany(userId: String, name: String, lastName: String, state: String) {
-        val currentAgencyName = obtenerNombreDeLaAgencia() // Obtiene el nombre de la agencia
-        if (currentAgencyName.isNotEmpty()) {
-            val companyDriverRef = FirebaseDatabase.getInstance().getReference("companies/$currentAgencyName/remiseros")
+    private fun addUserToCompany(userId: String) {
+        if (companyName.isNotEmpty()) {
+            val companyDriverRef = FirebaseDatabase.getInstance().getReference("agency_drivers")
             val data = mapOf(
-                "driverId" to userId,
-                "name" to name,
-                "lastName" to lastName,
-                "state" to state
+                "companyName" to companyName,
+                "driverId" to userId
             )
-            companyDriverRef.child(userId).setValue(data)
+
+            companyDriverRef.push().setValue(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Usuario agregado a la agencia.", Toast.LENGTH_SHORT).show()
                 }
@@ -101,25 +99,12 @@ class ActivityBuscarRemisero : AppCompatActivity() {
             Toast.makeText(this, "No se pudo obtener el nombre de la agencia.", Toast.LENGTH_SHORT).show()
         }
     }
+}
 
+// Clase 'User' para almacenar datos del usuario
+data class User(val userId: String?, val name: String, val email: String)
 
-    private fun obtenerNombreDeLaAgencia(): String {
-        // Simulación de obtención de nombre de la agencia desde Firebase
-        var nombreAgencia = ""
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            val databaseRef = FirebaseDatabase.getInstance().getReference("owners").child(userId)
-            databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    nombreAgencia = snapshot.child("name").getValue(String::class.java) ?: ""
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@ActivityBuscarRemisero, "Error al obtener el nombre de la agencia: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
-        return nombreAgencia
-    }
-
+// Adaptador para el RecyclerView (simplificado para visualización)
+class UserAdapter(private val usersList: List<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+    // ViewHolder y otros métodos aquí para manejar los elementos de la lista...
 }
