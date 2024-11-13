@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityModificarRemisero"
+    tools:context=".ActivityModificarAgencia"
     android:background="@drawable/fondo_degradado">
 
     <include
@@ -24,13 +24,13 @@
         app:srcCompat="@drawable/edificio_de_oficinas" />
 
     <EditText
-        android:id="@+id/textNombreModifi"
+        android:id="@+id/textNameModifi"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:background="@drawable/border_inputs"
         android:padding="5dp"
-        android:text="Calle"
+        android:text="Nombre"
         android:textColor="@color/white"
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textNombreModifi" />
+        app:layout_constraintTop_toBottomOf="@+id/textNameModifi" />
 
     <EditText
         android:id="@+id/textPasswordModifi"
@@ -83,7 +83,7 @@
         android:layout_width="191dp"
         android:layout_height="53dp"
         android:layout_marginTop="50dp"
-        android:text="Regresar"
+        android:text="Modificar"
         android:textSize="23sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textPasswordModifi" />

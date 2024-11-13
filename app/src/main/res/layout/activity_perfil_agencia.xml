@@ -44,32 +44,18 @@
         app:srcCompat="@drawable/edificio_de_oficinas" />
 
     <TextView
-        android:id="@+id/textCalle"
+        android:id="@+id/textNombre"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:background="@drawable/border_inputs"
         android:padding="5dp"
-        android:text="Calle"
+        android:text="Nombre"
         android:textColor="@color/white"
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView8" />
-
-    <TextView
-        android:id="@+id/Altura"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/border_inputs"
-        android:padding="5dp"
-        android:text="Altura"
-        android:textColor="@color/white"
-        android:textSize="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textCalle" />
 
     <TextView
         android:id="@+id/textMail"
@@ -84,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Altura" />
+        app:layout_constraintTop_toBottomOf="@+id/textNombre" />
 
     <TextView
         android:id="@+id/textPassword"

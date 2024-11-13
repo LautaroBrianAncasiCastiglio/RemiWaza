@@ -1,17 +1,19 @@
 package com.calipso.remiwaza
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.database.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class ActivityBucarRemisero : AppCompatActivity() {
+class ActivityBuscarRemisero : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var searchField: EditText
@@ -23,24 +25,20 @@ class ActivityBucarRemisero : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscar_remisero)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        database = FirebaseDatabase.getInstance().getReference("users") // Refiere a la tabla 'users'
+
+        // Inicializar las vistas
         searchField = findViewById(R.id.seachRemisero)
         searchButton = findViewById(R.id.btnSearchUser)
         resultText = findViewById(R.id.textUserResult)
         addButton = findViewById(R.id.btnAddToAgencia)
 
-        database = FirebaseDatabase.getInstance().getReference("users")  // Se asume que los usuarios están bajo "users"
-        searchField = findViewById(R.id.seachRemisero)
-        searchButton = findViewById(R.id.btnSearchUser)
-        resultText = findViewById(R.id.textUserResult)
-        addButton = findViewById(R.id.btnAddToAgencia)
+        // Inicializar la referencia de la base de datos
+        database = FirebaseDatabase.getInstance().getReference("drivers")
 
-        // Acción de búsqueda de usuario por correo
+        // Obtener el nombre de la agencia (puedes cambiar la forma de obtener este dato según tu lógica)
+        companyName = "owners"
+
+        // Configurar la acción del botón de búsqueda
         searchButton.setOnClickListener {
             val email = searchField.text.toString().trim()
             if (email.isEmpty()) {
@@ -50,7 +48,7 @@ class ActivityBucarRemisero : AppCompatActivity() {
             }
         }
 
-        // Acción de agregar el usuario a la agencia
+        // Configurar la acción del botón de agregar
         addButton.setOnClickListener {
             val userId = addButton.tag as? String
             if (userId != null) {
@@ -61,43 +59,38 @@ class ActivityBucarRemisero : AppCompatActivity() {
         }
     }
 
-    // Método para buscar al remisero por su correo electrónico
     private fun searchUserByEmail(email: String) {
         database.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (userSnapshot in snapshot.children) {
-                        val userId = userSnapshot.key  // Obtiene el ID del usuario
+                        val userId = userSnapshot.key
                         val userName = userSnapshot.child("name").getValue(String::class.java)
                         resultText.text = "Usuario encontrado: $userName"
-                        addButton.tag = userId  // Asocia el ID del usuario con el botón
-                        addButton.visibility = Button.VISIBLE  // Muestra el botón de agregar
+                        addButton.tag = userId
                     }
                 } else {
                     resultText.text = "No se encontró al usuario."
-                    addButton.visibility = Button.GONE  // Oculta el botón si no se encuentra el usuario
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ActivityBucarRemisero, "Error en la búsqueda: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ActivityBuscarRemisero, "Error en la búsqueda: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Método para agregar el remisero a la agencia
-    private fun addUserToCompany(userId: String) {
-        // Verificar que el nombre de la agencia esté disponible
-        if (companyName.isNotEmpty()) {
-            // Referencia a la nueva tabla donde se almacenan los remiseros de la agencia
-            val companyDriverRef = FirebaseDatabase.getInstance().getReference("agency_drivers")
+    private fun addUserToCompany(userId: String, name: String, lastName: String, state: String) {
+        val currentAgencyName = obtenerNombreDeLaAgencia() // Obtiene el nombre de la agencia
+        if (currentAgencyName.isNotEmpty()) {
+            val companyDriverRef = FirebaseDatabase.getInstance().getReference("companies/$currentAgencyName/remiseros")
             val data = mapOf(
-                "companyName" to companyName,
-                "driverId" to userId  // Asociamos el ID del remisero con la agencia
+                "driverId" to userId,
+                "name" to name,
+                "lastName" to lastName,
+                "state" to state
             )
-
-            // Guardar los datos en la base de datos bajo la tabla "agency_drivers"
-            companyDriverRef.push().setValue(data)
+            companyDriverRef.child(userId).setValue(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Usuario agregado a la agencia.", Toast.LENGTH_SHORT).show()
                 }
@@ -108,4 +101,25 @@ class ActivityBucarRemisero : AppCompatActivity() {
             Toast.makeText(this, "No se pudo obtener el nombre de la agencia.", Toast.LENGTH_SHORT).show()
         }
     }
+
+
+    private fun obtenerNombreDeLaAgencia(): String {
+        // Simulación de obtención de nombre de la agencia desde Firebase
+        var nombreAgencia = ""
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val databaseRef = FirebaseDatabase.getInstance().getReference("owners").child(userId)
+            databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    nombreAgencia = snapshot.child("name").getValue(String::class.java) ?: ""
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@ActivityBuscarRemisero, "Error al obtener el nombre de la agencia: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+        return nombreAgencia
+    }
+
 }

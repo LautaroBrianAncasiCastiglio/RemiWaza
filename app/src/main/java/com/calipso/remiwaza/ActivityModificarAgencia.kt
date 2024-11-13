@@ -30,15 +30,12 @@ class ActivityModificarAgencia : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_modificar_remisero)  // Reemplaza por el XML adecuado si es necesario
-
-        // Configuración de padding para pantallas con borde
+        setContentView(R.layout.activity_modificar_agencia)  // Reemplaza por el XML adecuado si es necesario
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         // Inicialización de botones de navegación
         val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)  // Puede que necesites cambiar este botón
         userButton.setOnClickListener {
@@ -54,7 +51,7 @@ class ActivityModificarAgencia : AppCompatActivity() {
 
         // Inicialización de Firebase
         auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance().getReference("agencies")  // Aquí cambiamos a "agencies"
+        database = FirebaseDatabase.getInstance().getReference("owners")  // Aquí cambiamos a "agencies"
 
         // Referencias a las vistas de la interfaz
         textName = findViewById(R.id.textNameModifi)  // O cambia el ID según el XML
@@ -63,7 +60,6 @@ class ActivityModificarAgencia : AppCompatActivity() {
         btnCancelar = findViewById(R.id.btnCancelarModificación)
         btnReturn = findViewById(R.id.btnReturn)
 
-        // Cargar los datos de la agencia
         loadAgencyData()
 
         // Acción al cancelar la modificación
@@ -71,17 +67,18 @@ class ActivityModificarAgencia : AppCompatActivity() {
             finish() // Cierra la actividad
         }
 
-        // Acción al regresar y guardar los cambios
+        // Botón de regresar (puedes personalizar la funcionalidad)
         btnReturn.setOnClickListener {
             updateAgencyData()
         }
+
     }
 
     // Cargar los datos de la agencia desde Firebase
     private fun loadAgencyData() {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            database.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+        val agenciId = auth.currentUser?.uid
+        if (agenciId != null) {
+            database.child(agenciId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Rellenar los campos con los datos de la agencia
@@ -104,17 +101,15 @@ class ActivityModificarAgencia : AppCompatActivity() {
 
     // Función para actualizar los datos de la agencia en Firebase
     private fun updateAgencyData() {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            // Recoger los datos modificados
+        val agenciId = auth.currentUser?.uid
+        if (agenciId != null) {
             val updatedData = mapOf(
                 "name" to textName.text.toString().trim(),
                 "email" to textMail.text.toString().trim(),
                 "password" to textPassword.text.toString().trim()
             )
 
-            // Actualizar los datos en Firebase
-            database.child(userId).updateChildren(updatedData)
+            database.child(agenciId).updateChildren(updatedData)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Datos actualizados correctamente.", Toast.LENGTH_SHORT).show()
                 }
