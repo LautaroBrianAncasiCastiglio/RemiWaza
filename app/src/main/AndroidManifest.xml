@@ -28,7 +28,7 @@
             android:name=".ActivityListCarAgencia"
             android:exported="false" />
         <activity
-            android:name=".ActivityBuscarRemisero"
+            android:name=".ActivityBuscarEmpleado"
             android:exported="false" />
         <activity
             android:name=".ActivityInicioAgencia"

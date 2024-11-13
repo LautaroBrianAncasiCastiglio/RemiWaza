@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.SpannableString
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -24,10 +25,16 @@ class ActivityAdvertencia : AppCompatActivity() {
             insets
         }
 
+        val fullscreenButton = findViewById<Button>(R.id.fullscreenButton)
+        fullscreenButton.setOnClickListener {
+            val intent = Intent(this, ActivityMensajeInstructivo1::class.java)
+            startActivity(intent)
+        }
+
         showScreen()
     }
     private fun showScreen(){
-        object : CountDownTimer(6000,1000){
+        object : CountDownTimer(4000,1000){
             override fun onTick(millisUntilFinished: Long) {
             }
 

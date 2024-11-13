@@ -59,7 +59,7 @@ class ActivityLoginAgencia : AppCompatActivity() {
 
     private fun loginAgency(email: String, password: String) {
 
-        val intent = Intent(this, ActivityInicioAgencia::class.java)
+        val intent = Intent(this, ActivityPerfilAgencia::class.java)
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
