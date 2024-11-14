@@ -1,8 +1,10 @@
 package com.calipso.remiwaza
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +38,22 @@ class ActivityBuscarEmpleado : AppCompatActivity() {
         searchButton = findViewById(R.id.btnSearchUser)
         resultText = findViewById(R.id.textUserResult)
         addButton = findViewById(R.id.btnAddToAgencia)
+
+        val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)
+        userButton.setOnClickListener {
+            val intent = Intent(this, ActivityPerfilAgencia::class.java)
+            startActivity(intent)
+        }
+        val agenciaButton: LinearLayout = findViewById(R.id.btnEmpleados)
+        agenciaButton.setOnClickListener {
+            val intent = Intent(this, ActivityInicioAgencia::class.java)
+            startActivity(intent)
+        }
+        val autoButton: LinearLayout = findViewById(R.id.btnCarro)
+        autoButton.setOnClickListener {
+            val intent = Intent(this, ActivityAgregarAuto::class.java)
+            startActivity(intent)
+        }
 
         // Inicializar la referencia de la base de datos
         database = FirebaseDatabase.getInstance().getReference("drivers")

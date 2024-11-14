@@ -43,16 +43,17 @@ class ActivityPerfilAgencia : AppCompatActivity() {
             val intent = Intent(this, ActivityInicioAgencia::class.java)
             startActivity(intent)
         }
-        val button = findViewById<Button>(R.id.btnModificar)
-        button.setOnClickListener {
-            val intent1 = Intent(applicationContext, ActivityModificarAgencia::class.java)
-            startActivity(intent1)
-        }
         val autoButton: LinearLayout = findViewById(R.id.btnCarro)
         autoButton.setOnClickListener {
             val intent = Intent(this, ActivityAgregarAuto::class.java)
             startActivity(intent)
         }
+        val button = findViewById<Button>(R.id.btnModificar)
+        button.setOnClickListener {
+            val intent1 = Intent(applicationContext, ActivityModificarAgencia::class.java)
+            startActivity(intent1)
+        }
+
         val button2 = findViewById<Button>(R.id.btnCerrarSesion)
         button2.setOnClickListener {
             val intent1 = Intent(applicationContext, ActivityLoginAgencia::class.java)

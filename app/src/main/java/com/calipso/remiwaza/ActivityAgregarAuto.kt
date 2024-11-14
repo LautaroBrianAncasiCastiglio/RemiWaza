@@ -34,11 +34,13 @@ class ActivityAgregarAuto : AppCompatActivity() {
         // Configuración de botones de navegación
         val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)
         userButton.setOnClickListener {
-            startActivity(Intent(this, ActivityPerfilAgencia::class.java))
+            val intent = Intent(this, ActivityPerfilAgencia::class.java)
+            startActivity(intent)
         }
         val agenciaButton: LinearLayout = findViewById(R.id.btnEmpleados)
         agenciaButton.setOnClickListener {
-            startActivity(Intent(this, ActivityInicioAgencia::class.java))
+            val intent = Intent(this, ActivityInicioAgencia::class.java)
+            startActivity(intent)
         }
 
         // Obtener el ID de la agencia y configurar el botón de registro

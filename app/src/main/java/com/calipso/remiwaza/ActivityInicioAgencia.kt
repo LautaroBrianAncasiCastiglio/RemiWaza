@@ -12,83 +12,85 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+
 
 class ActivityInicioAgencia : AppCompatActivity() {
 
-    private lateinit var database: DatabaseReference
-    private lateinit var empleadosAdapter: CustomAdapterEmpleados
-    private lateinit var empleadosList: MutableList<ParametrosEmpleados>
-    private lateinit var listViewEmpleados: RecyclerView
+    private lateinit var listaEmpleados: RecyclerView
     private lateinit var textViewNoEmpleados: TextView
+    private lateinit var db: FirebaseDatabase
+    private lateinit var agencyRef: DatabaseReference
+    private lateinit var employeesList: MutableList<ParametrosEmpleados>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inicio_agencia)
 
-        // Inicializamos las vistas
-        listViewEmpleados = findViewById(R.id.listaEmpleados)
-        listViewEmpleados.layoutManager = LinearLayoutManager(this)
-        textViewNoEmpleados = findViewById(R.id.textViewNoEmpleados)
-
-        // Inicializamos la lista de empleados
-        empleadosList = mutableListOf()
-        empleadosAdapter = CustomAdapterEmpleados(this, empleadosList)
-        listViewEmpleados.adapter = empleadosAdapter
-
-        // Inicializamos Firebase
-        database = FirebaseDatabase.getInstance().getReference("companies")
-
-        // Cargar empleados
-        cargarEmpleados()
-    }
-
-    private fun cargarEmpleados() {
-        // Obtener el nombre de la empresa desde las preferencias
-        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-        val companyName = sharedPref.getString("companyName", "")
-
-        if (companyName.isNullOrEmpty()) {
-            Log.e("ActivityInicioAgencia", "No tiene agencia asignada")
-            textViewNoEmpleados.text = "No tiene agencia asignada"
-            textViewNoEmpleados.visibility = View.VISIBLE
-            listViewEmpleados.visibility = View.GONE
-            return
+        val button = findViewById<Button>(R.id.btnAgregarEmpleados)
+        button.setOnClickListener {
+            val intent1 = Intent(applicationContext, ActivityBuscarEmpleado::class.java)
+            startActivity(intent1)
+        }
+        val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)
+        userButton.setOnClickListener {
+            val intent = Intent(this, ActivityPerfilAgencia::class.java)
+            startActivity(intent)
+        }
+        val agenciaButton: LinearLayout = findViewById(R.id.btnEmpleados)
+        agenciaButton.setOnClickListener {
+            val intent = Intent(this, ActivityInicioAgencia::class.java)
+            startActivity(intent)
+        }
+        val autoButton: LinearLayout = findViewById(R.id.btnCarro)
+        autoButton.setOnClickListener {
+            val intent = Intent(this, ActivityAgregarAuto::class.java)
+            startActivity(intent)
         }
 
-        // Referencia a la base de datos para esa compañía
-        val companyRef = database.child(companyName).child("remiseros")
+        listaEmpleados = findViewById(R.id.listaEmpleados)
+        textViewNoEmpleados = findViewById(R.id.textViewNoEmpleados)
 
-        // Leer los datos de los remiseros (empleados)
-        companyRef.get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                empleadosList.clear()
-                for (data in snapshot.children) {
-                    // Extraer los datos del remisero
-                    val empleado = data.getValue(ParametrosEmpleados::class.java)
+        db = FirebaseDatabase.getInstance()
+        agencyRef = db.getReference("companies") // Ruta base de las empresas
+
+        // Inicializa tu RecyclerView
+        listaEmpleados.layoutManager = LinearLayoutManager(this)
+
+        // Obtener el nombre de la agencia actual (puede venir de un login o ser fijo por ahora)
+        val currentAgencyName = "nombreDeLaAgencia" // Sustituir con el nombre real de la agencia
+
+        // Obtenemos los datos de los remiseros dentro de la agencia
+        agencyRef.child(currentAgencyName).child("remiseros").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val empleadosList = mutableListOf<ParametrosEmpleados>()
+
+                // Iteramos sobre los remiseros y extraemos los datos
+                for (empleadoSnapshot in snapshot.children) {
+                    val empleado = empleadoSnapshot.getValue(ParametrosEmpleados::class.java)
                     if (empleado != null) {
                         empleadosList.add(empleado)
                     }
                 }
-                empleadosAdapter.notifyDataSetChanged()
 
-                // Si no hay empleados, mostrar mensaje
+                // Asignamos el adaptador al RecyclerView
+                val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, empleadosList)
+                listaEmpleados.adapter = adapter
+
+                // Si no hay empleados, mostramos el mensaje correspondiente
                 if (empleadosList.isEmpty()) {
-                    textViewNoEmpleados.text = "No hay empleados registrados."
                     textViewNoEmpleados.visibility = View.VISIBLE
-                    listViewEmpleados.visibility = View.GONE
+                    listaEmpleados.visibility = View.GONE
                 } else {
                     textViewNoEmpleados.visibility = View.GONE
-                    listViewEmpleados.visibility = View.VISIBLE
+                    listaEmpleados.visibility = View.VISIBLE
                 }
-            } else {
-                // Si no hay remiseros
-                textViewNoEmpleados.text = "No hay empleados registrados."
-                textViewNoEmpleados.visibility = View.VISIBLE
-                listViewEmpleados.visibility = View.GONE
             }
-        }.addOnFailureListener { exception ->
-            Log.e("ActivityInicioAgencia", "Error al cargar empleados: ${exception.message}")
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("ActivityInicioAgencia", "Error al obtener los datos de Firebase", error.toException())
+            }
+        })
     }
 }
