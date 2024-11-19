@@ -1,12 +1,12 @@
 package com.calipso.remiwaza
 
-data class ParametrosEmpleados(
-    val id: String = "", // Si tienes un ID explícito
-    val name: String = "",
-    val lastName: String = "",
-    val state: String = "",
-    val modelo: String = "", // Si necesitas este campo
-    val marca: String = "", // Si necesitas este campo
-) {
+data class EmpleadoConAuto(
+    val name: String,
+    val lastName: String,
+    val state: String,
+    val modelo: String,
+    val marca: String
+)
+ {
     // Constructor sin argumentos que Firebase necesita ya está implícito al usar valores predeterminados
 }
