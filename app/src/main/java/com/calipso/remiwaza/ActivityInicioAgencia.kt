@@ -28,32 +28,58 @@ class ActivityInicioAgencia : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inicio_agencia)
 
+        val button = findViewById<Button>(R.id.btnAgregarEmpleados)
+        button.setOnClickListener {
+            val intent1 = Intent(applicationContext, ActivityBuscarEmpleado::class.java)
+            startActivity(intent1)
+        }
+        val userButton: LinearLayout = findViewById(R.id.btnCountAgenci)
+        userButton.setOnClickListener {
+            val intent = Intent(this, ActivityPerfilAgencia::class.java)
+            startActivity(intent)
+        }
+        val agenciaButton: LinearLayout = findViewById(R.id.btnEmpleados)
+        agenciaButton.setOnClickListener {
+            val intent = Intent(this, ActivityInicioAgencia::class.java)
+            startActivity(intent)
+        }
+        val autoButton: LinearLayout = findViewById(R.id.btnCarro)
+        autoButton.setOnClickListener {
+            val intent = Intent(this, ActivityAgregarAuto::class.java)
+            startActivity(intent)
+        }
+
         listaEmpleados = findViewById(R.id.listaEmpleados)
         textViewNoEmpleados = findViewById(R.id.textViewNoEmpleados)
 
         db = FirebaseDatabase.getInstance()
-        agencyRef = db.getReference("companies")
+        agencyRef = db.getReference("companies") // Ruta base de las empresas
 
+        // Inicializa tu RecyclerView
         listaEmpleados.layoutManager = LinearLayoutManager(this)
 
+        // Obtener el nombre de la agencia actual (puede venir de un login o ser fijo por ahora)
         val currentAgencyName = "nombreDeLaAgencia" // Sustituir con el nombre real de la agencia
 
-        // Obtener los remiseros disponibles
+        // Obtenemos los datos de los remiseros dentro de la agencia
         agencyRef.child(currentAgencyName).child("remiseros").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                employeesList.clear()
+                val empleadosList = mutableListOf<ParametrosEmpleados>()
+
+                // Iteramos sobre los remiseros y extraemos los datos
                 for (empleadoSnapshot in snapshot.children) {
                     val empleado = empleadoSnapshot.getValue(ParametrosEmpleados::class.java)
-                    if (empleado != null && empleado.state == "disponible") { // Solo agregar si está disponible
-                        employeesList.add(empleado)
+                    if (empleado != null) {
+                        empleadosList.add(empleado)
                     }
                 }
-                // Actualizar la lista en el RecyclerView
-                val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, employeesList)
+
+                // Asignamos el adaptador al RecyclerView
+                val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, empleadosList)
                 listaEmpleados.adapter = adapter
 
-                // Mostrar o ocultar el mensaje de "No empleados" según corresponda
-                if (employeesList.isEmpty()) {
+                // Si no hay empleados, mostramos el mensaje correspondiente
+                if (empleadosList.isEmpty()) {
                     textViewNoEmpleados.visibility = View.VISIBLE
                     listaEmpleados.visibility = View.GONE
                 } else {
