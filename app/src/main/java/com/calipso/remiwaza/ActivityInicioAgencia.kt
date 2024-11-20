@@ -22,7 +22,7 @@ class ActivityInicioAgencia : AppCompatActivity() {
     private lateinit var textViewNoEmpleados: TextView
     private lateinit var db: FirebaseDatabase
     private lateinit var agencyRef: DatabaseReference
-    private lateinit var employeesList: MutableList<ParametrosEmpleados>
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +59,7 @@ class ActivityInicioAgencia : AppCompatActivity() {
         listaEmpleados.layoutManager = LinearLayoutManager(this)
 
         // Obtener el nombre de la agencia actual (puede venir de un login o ser fijo por ahora)
-        val currentAgencyName = "nombreDeLaAgencia" // Sustituir con el nombre real de la agencia
+        val currentAgencyName = "pepapono" // Sustituir con el nombre real de la agencia
 
         // Obtenemos los datos de los remiseros dentro de la agencia
         agencyRef.child(currentAgencyName).child("remiseros").addValueEventListener(object : ValueEventListener {
@@ -71,20 +71,26 @@ class ActivityInicioAgencia : AppCompatActivity() {
                     val empleado = empleadoSnapshot.getValue(ParametrosEmpleados::class.java)
                     if (empleado != null) {
                         empleadosList.add(empleado)
+                        Log.d("ActivityInicioAgencia", "Remisero encontrado: ${empleado.name} ${empleado.lastName}")
+                    } else {
+                        Log.d("ActivityInicioAgencia", "Remisero no válido encontrado en snapshot: ${empleadoSnapshot.key}")
                     }
                 }
 
-                // Asignamos el adaptador al RecyclerView
-                val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, empleadosList)
-                listaEmpleados.adapter = adapter
+                // Ordenamos la lista: primero los "available", luego los demás
+                empleadosList.sortByDescending { it.state.lowercase() == "not available" }
 
                 // Si no hay empleados, mostramos el mensaje correspondiente
-                if (empleadosList.isEmpty()) {
-                    textViewNoEmpleados.visibility = View.VISIBLE
-                    listaEmpleados.visibility = View.GONE
-                } else {
-                    textViewNoEmpleados.visibility = View.GONE
+                if (empleadosList.isNotEmpty()) {
+                    val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, empleadosList)
+                    listaEmpleados.adapter = adapter
                     listaEmpleados.visibility = View.VISIBLE
+                    textViewNoEmpleados.visibility = View.GONE
+                    Log.d("ActivityInicioAgencia", "Número de empleados cargados: ${empleadosList.size}")
+                } else {
+                    listaEmpleados.visibility = View.GONE
+                    textViewNoEmpleados.visibility = View.VISIBLE
+                    Log.d("ActivityInicioAgencia", "Número de empleados cargados: ${empleadosList.size}")
                 }
             }
 
@@ -92,5 +98,25 @@ class ActivityInicioAgencia : AppCompatActivity() {
                 Log.e("ActivityInicioAgencia", "Error al obtener los datos de Firebase", error.toException())
             }
         })
+    }
+    private fun obtenerNombreDeLaAgencia(callback: (String?) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val databaseRef = FirebaseDatabase.getInstance().getReference("owners").child(userId)
+            databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val agencyId = snapshot.child("name").getValue(String::class.java)
+                    callback(agencyId)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    callback(null)
+                    Toast.makeText(this@ActivityInicioAgencia, "Error al obtener el ID de la agencia: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            callback(null)
+            Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
-class MyAdapter(private val listCarro: ArrayList<ParametrosAutos>, private val context: Context) :
-    RecyclerView.Adapter<MyAdapter.CustomViewHolder>() {
+class CustomAdapterAutoRemisero(private val listCarro: ArrayList<ParametrosAutos>, private val context: Context) :
+    RecyclerView.Adapter<CustomAdapterAutoRemisero.CustomViewHolder>() {
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemModel: TextView = itemView.findViewById(R.id.itemModel)
@@ -26,12 +26,12 @@ class MyAdapter(private val listCarro: ArrayList<ParametrosAutos>, private val c
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val currentItem = listCarro[position]
-        holder.itemModel.text = currentItem.Model
-        holder.itemColor.text = currentItem.Color
-        holder.itemMarca.text = currentItem.Marca
+        holder.itemModel.text = currentItem.model
+        holder.itemColor.text = currentItem.color
+        holder.itemMarca.text = currentItem.marca
 
         // Configura el color de fondo según el estado de "isActive"
-        if (currentItem.StateA) {
+        if (currentItem.state) {
             holder.itemView.setBackgroundColor(
                 ContextCompat.getColor(holder.itemView.context, R.color.stateGreen)
             )
@@ -44,9 +44,9 @@ class MyAdapter(private val listCarro: ArrayList<ParametrosAutos>, private val c
         // Agrega el OnClickListener para iniciar la nueva actividad
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ActivityStateRemisero::class.java)
-            intent.putExtra("model", currentItem.Model)
-            intent.putExtra("marca", currentItem.Marca)
-            intent.putExtra("color", currentItem.Color)
+            intent.putExtra("model", currentItem.model)
+            intent.putExtra("marca", currentItem.marca)
+            intent.putExtra("color", currentItem.color)
             context.startActivity(intent)
         }
     }

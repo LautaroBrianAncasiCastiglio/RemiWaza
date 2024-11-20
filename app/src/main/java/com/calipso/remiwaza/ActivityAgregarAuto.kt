@@ -62,7 +62,7 @@ class ActivityAgregarAuto : AppCompatActivity() {
         val state = "available"
 
         if (marca.isNotEmpty() && modelo.isNotEmpty() && color.isNotEmpty()) {
-            val companyCarsRef = FirebaseDatabase.getInstance().getReference("cars")
+            val companyCarsRef = FirebaseDatabase.getInstance().getReference("companies/$agencyId/cars")
             val autoId = companyCarsRef.push().key
 
             if (autoId != null) {

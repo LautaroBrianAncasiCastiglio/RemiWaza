@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
             }
             override fun onFinish() {
-                val intent = Intent(applicationContext, ActivityAdvertencia::class.java)
+                val intent = Intent(applicationContext, ActivityLoginAgencia::class.java)
                 startActivity(intent)
                 finish()
             }

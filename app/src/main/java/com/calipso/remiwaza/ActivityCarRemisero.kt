@@ -13,7 +13,7 @@ import com.google.firebase.database.*
 class ActivityCarRemisero : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var customAdapter: MyAdapter
+    private lateinit var customAdapter: CustomAdapterAutoRemisero
     private lateinit var dataList: ArrayList<ParametrosAutos>
     private lateinit var database: DatabaseReference
 
@@ -42,7 +42,7 @@ class ActivityCarRemisero : AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
 
         dataList = ArrayList()
-        database = FirebaseDatabase.getInstance().getReference("autos")
+        database = FirebaseDatabase.getInstance().getReference("cars")
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -61,7 +61,7 @@ class ActivityCarRemisero : AppCompatActivity() {
             }
         })
 
-        customAdapter = MyAdapter(dataList, this)
+        customAdapter = CustomAdapterAutoRemisero(dataList, this)
         recyclerView.adapter = customAdapter
     }
 }

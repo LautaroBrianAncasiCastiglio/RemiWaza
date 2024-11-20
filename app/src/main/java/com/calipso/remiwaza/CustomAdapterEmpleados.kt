@@ -17,31 +17,35 @@ import com.google.firebase.database.ValueEventListener
 class CustomAdapterEmpleados(private val context: Context, private val dataList: List<ParametrosEmpleados>) :
     RecyclerView.Adapter<CustomAdapterEmpleados.CustomViewHolder>() {
 
-    // ViewHolder que contiene las vistas del ítem
     inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemName: TextView = itemView.findViewById(R.id.itemName)
-        val itemLastName: TextView = itemView.findViewById(R.id.itemLastName)
-        val itemState: TextView = itemView.findViewById(R.id.itemState)
+        val itemCar: TextView = itemView.findViewById(R.id.itemCar)
+        val itemColorCar: TextView = itemView.findViewById(R.id.itemColorCar)
+        val itemLayout: View = itemView // El contenedor completo del ítem
     }
 
-    // Se infla el diseño del ítem
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.listview_empleado_agencia, parent, false)
         return CustomViewHolder(view)
     }
 
-    // Se asignan los datos a cada ítem
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val empleado = dataList[position]
 
         // Asigna los valores del objeto ParametrosEmpleados a los TextView correspondientes
-        holder.itemName.text = empleado.name
-        holder.itemLastName.text = empleado.lastName
-        holder.itemState.text = empleado.state
+        holder.itemName.text = "${empleado.name} ${empleado.lastName}"
+        holder.itemName.text = "${empleado.name} ${empleado.lastName}"
+
+        // Cambia el color de fondo según el estado
+        when (empleado.state.lowercase()) {
+            "available" -> holder.itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.stateRed))
+            "not available" -> holder.itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.stateGreen))
+            else -> holder.itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.transparentBlack))
+        }
     }
 
-    // Retorna el número de elementos en la lista
     override fun getItemCount(): Int {
         return dataList.size
     }
 }
+

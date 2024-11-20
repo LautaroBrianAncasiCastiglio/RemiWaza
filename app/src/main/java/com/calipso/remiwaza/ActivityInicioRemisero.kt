@@ -25,7 +25,7 @@ class ActivityInicioRemisero : AppCompatActivity() {
 
         val button =findViewById<Button>(R.id.btnState)
         button.setOnClickListener{
-            val intent1= Intent(applicationContext, ActivityStateRemisero::class.java)
+            val intent1= Intent(applicationContext, ActivityCarRemisero::class.java)
             startActivity(intent1)
         }
         val userButton: LinearLayout = findViewById(R.id.btnCountRemisero)
