@@ -53,52 +53,69 @@ class ActivityInicioAgencia : AppCompatActivity() {
         textViewNoEmpleados = findViewById(R.id.textViewNoEmpleados)
 
         db = FirebaseDatabase.getInstance()
+        auth = FirebaseAuth.getInstance()
         agencyRef = db.getReference("companies") // Ruta base de las empresas
 
         // Inicializa tu RecyclerView
         listaEmpleados.layoutManager = LinearLayoutManager(this)
 
-        // Obtener el nombre de la agencia actual (puede venir de un login o ser fijo por ahora)
-        val currentAgencyName = "pepapono" // Sustituir con el nombre real de la agencia
+        // Llama a obtenerNombreDeLaAgencia para obtener el nombre de la agencia
+        obtenerNombreDeLaAgencia { currentAgencyName ->
+            if (currentAgencyName != null && currentAgencyName.isNotEmpty()) {
+                // Obtenemos los datos de los remiseros dentro de la agencia
+                agencyRef.child(currentAgencyName).child("remiseros")
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val empleadosList = mutableListOf<ParametrosEmpleados>()
 
-        // Obtenemos los datos de los remiseros dentro de la agencia
-        agencyRef.child(currentAgencyName).child("remiseros").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val empleadosList = mutableListOf<ParametrosEmpleados>()
+                            // Iteramos sobre los remiseros y extraemos los datos
+                            for (empleadoSnapshot in snapshot.children) {
+                                val empleado = empleadoSnapshot.getValue(ParametrosEmpleados::class.java)
+                                if (empleado != null) {
+                                    empleadosList.add(empleado)
+                                    Log.d(
+                                        "ActivityInicioAgencia",
+                                        "Remisero encontrado: ${empleado.name} ${empleado.lastName}"
+                                    )
+                                } else {
+                                    Log.d(
+                                        "ActivityInicioAgencia",
+                                        "Remisero no válido encontrado en snapshot: ${empleadoSnapshot.key}"
+                                    )
+                                }
+                            }
 
-                // Iteramos sobre los remiseros y extraemos los datos
-                for (empleadoSnapshot in snapshot.children) {
-                    val empleado = empleadoSnapshot.getValue(ParametrosEmpleados::class.java)
-                    if (empleado != null) {
-                        empleadosList.add(empleado)
-                        Log.d("ActivityInicioAgencia", "Remisero encontrado: ${empleado.name} ${empleado.lastName}")
-                    } else {
-                        Log.d("ActivityInicioAgencia", "Remisero no válido encontrado en snapshot: ${empleadoSnapshot.key}")
-                    }
-                }
+                            // Ordenamos la lista: primero los "available", luego los demás
+                            empleadosList.sortByDescending { it.state.lowercase() == "not available" }
 
-                // Ordenamos la lista: primero los "available", luego los demás
-                empleadosList.sortByDescending { it.state.lowercase() == "not available" }
+                            // Si no hay empleados, mostramos el mensaje correspondiente
+                            if (empleadosList.isNotEmpty()) {
+                                val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, empleadosList)
+                                listaEmpleados.adapter = adapter
+                                listaEmpleados.visibility = View.VISIBLE
+                                textViewNoEmpleados.visibility = View.GONE
+                                Log.d("ActivityInicioAgencia", "Número de empleados cargados: ${empleadosList.size}")
+                            } else {
+                                listaEmpleados.visibility = View.GONE
+                                textViewNoEmpleados.visibility = View.VISIBLE
+                                Log.d("ActivityInicioAgencia", "Número de empleados cargados: ${empleadosList.size}")
+                            }
+                        }
 
-                // Si no hay empleados, mostramos el mensaje correspondiente
-                if (empleadosList.isNotEmpty()) {
-                    val adapter = CustomAdapterEmpleados(this@ActivityInicioAgencia, empleadosList)
-                    listaEmpleados.adapter = adapter
-                    listaEmpleados.visibility = View.VISIBLE
-                    textViewNoEmpleados.visibility = View.GONE
-                    Log.d("ActivityInicioAgencia", "Número de empleados cargados: ${empleadosList.size}")
-                } else {
-                    listaEmpleados.visibility = View.GONE
-                    textViewNoEmpleados.visibility = View.VISIBLE
-                    Log.d("ActivityInicioAgencia", "Número de empleados cargados: ${empleadosList.size}")
-                }
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(
+                                "ActivityInicioAgencia",
+                                "Error al obtener los datos de Firebase",
+                                error.toException()
+                            )
+                        }
+                    })
+            } else {
+                Toast.makeText(this, "No se pudo obtener el nombre de la agencia.", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("ActivityInicioAgencia", "Error al obtener los datos de Firebase", error.toException())
-            }
-        })
+        }
     }
+
     private fun obtenerNombreDeLaAgencia(callback: (String?) -> Unit) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
@@ -111,7 +128,11 @@ class ActivityInicioAgencia : AppCompatActivity() {
 
                 override fun onCancelled(error: DatabaseError) {
                     callback(null)
-                    Toast.makeText(this@ActivityInicioAgencia, "Error al obtener el ID de la agencia: ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@ActivityInicioAgencia,
+                        "Error al obtener el ID de la agencia: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         } else {

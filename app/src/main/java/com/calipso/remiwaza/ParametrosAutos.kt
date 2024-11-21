@@ -2,8 +2,9 @@ package com.calipso.remiwaza
 
 data class ParametrosAutos(
     val id: String = "",
-    val model:String = "",
+    val modelo:String = "",
     val marca:String = "",
     val color:String = "",
-    val state:Boolean
+    val state:String = "",
+    val driver: String = ""
 )

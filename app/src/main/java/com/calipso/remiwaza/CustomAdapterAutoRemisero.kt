@@ -9,13 +9,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
-class CustomAdapterAutoRemisero(private val listCarro: ArrayList<ParametrosAutos>, private val context: Context) :
+class CustomAdapterAutoRemisero(private val context: Context,private val autosList: List<ParametrosAutos>) :
     RecyclerView.Adapter<CustomAdapterAutoRemisero.CustomViewHolder>() {
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemModel: TextView = itemView.findViewById(R.id.itemModel)
         val itemMarca: TextView = itemView.findViewById(R.id.itemMarca)
         val itemColor: TextView = itemView.findViewById(R.id.itemColor)
+        val itemLayout: View = itemView // El contenedor completo del ítem
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
@@ -25,33 +26,30 @@ class CustomAdapterAutoRemisero(private val listCarro: ArrayList<ParametrosAutos
     }
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        val currentItem = listCarro[position]
-        holder.itemModel.text = currentItem.model
+        val currentItem = autosList[position]
+        holder.itemModel.text = currentItem.modelo
         holder.itemColor.text = currentItem.color
         holder.itemMarca.text = currentItem.marca
 
         // Configura el color de fondo según el estado de "isActive"
-        if (currentItem.state) {
-            holder.itemView.setBackgroundColor(
-                ContextCompat.getColor(holder.itemView.context, R.color.stateGreen)
-            )
-        } else {
-            holder.itemView.setBackgroundColor(
-                ContextCompat.getColor(holder.itemView.context, R.color.stateRed)
-            )
+        when (currentItem.state.lowercase()) {
+            "not available" -> holder.itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.stateRed))
+            "available" -> holder.itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.stateGreen))
+            else -> holder.itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.transparentBlack))
         }
 
         // Agrega el OnClickListener para iniciar la nueva actividad
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ActivityStateRemisero::class.java)
-            intent.putExtra("model", currentItem.model)
+            intent.putExtra("model", currentItem.modelo)
             intent.putExtra("marca", currentItem.marca)
             intent.putExtra("color", currentItem.color)
+            intent.putExtra("carId", currentItem.id)
             context.startActivity(intent)
         }
     }
 
     override fun getItemCount(): Int {
-        return listCarro.size
+        return autosList.size
     }
 }

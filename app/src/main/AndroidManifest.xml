@@ -16,6 +16,9 @@
             android:name=".ActivityAgregarAuto"
             android:exported="false" />
         <activity
+            android:name=".ActivityCarRemisero"
+            android:exported="false" />
+        <activity
             android:name=".ActivityPerfilAgencia"
             android:exported="false" />
         <activity

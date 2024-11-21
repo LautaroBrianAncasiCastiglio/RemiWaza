@@ -19,8 +19,8 @@ class CustomAdapterEmpleados(private val context: Context, private val dataList:
 
     inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemName: TextView = itemView.findViewById(R.id.itemName)
+        val itemLastName: TextView = itemView.findViewById(R.id.itemLastName)
         val itemCar: TextView = itemView.findViewById(R.id.itemCar)
-        val itemColorCar: TextView = itemView.findViewById(R.id.itemColorCar)
         val itemLayout: View = itemView // El contenedor completo del ítem
     }
 
@@ -33,8 +33,8 @@ class CustomAdapterEmpleados(private val context: Context, private val dataList:
         val empleado = dataList[position]
 
         // Asigna los valores del objeto ParametrosEmpleados a los TextView correspondientes
-        holder.itemName.text = "${empleado.name} ${empleado.lastName}"
-        holder.itemName.text = "${empleado.name} ${empleado.lastName}"
+        holder.itemName.text = "${empleado.name}"
+        holder.itemLastName.text = "${empleado.lastName}"
 
         // Cambia el color de fondo según el estado
         when (empleado.state.lowercase()) {

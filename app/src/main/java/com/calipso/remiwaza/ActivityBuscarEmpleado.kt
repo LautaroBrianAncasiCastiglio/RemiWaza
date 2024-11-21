@@ -121,16 +121,38 @@ class ActivityBuscarEmpleado : AppCompatActivity() {
     private fun addUserToCompany(userId: String, name: String, lastName: String, state: String) {
         obtenerNombreDeLaAgencia { currentAgencyName ->
             if (currentAgencyName.isNotEmpty()) {
-                val companyDriverRef = FirebaseDatabase.getInstance().getReference("companies/$currentAgencyName/remiseros")
+                val database = FirebaseDatabase.getInstance()
+
+                // Referencia a la tabla de la agencia
+                val companyDriverRef = database.getReference("companies/$currentAgencyName/remiseros")
+
+                // Referencia al remisero en la tabla principal de remiseros
+                val remiseroRef = database.getReference("drivers/$userId")
+
+                // Datos del remisero que se guardarán en la agencia
                 val data = mapOf(
                     "driverId" to userId,
                     "name" to name,
                     "lastName" to lastName,
                     "state" to state
                 )
+
+                // Datos adicionales para actualizar en la tabla principal del remisero
+                val remiseroData = mapOf(
+                    "agencia" to currentAgencyName
+                )
+
+                // Guardar el remisero en la agencia
                 companyDriverRef.child(userId).setValue(data)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Usuario agregado a la agencia.", Toast.LENGTH_SHORT).show()
+                        // Actualizar el campo "agencia" en la tabla principal de remiseros
+                        remiseroRef.updateChildren(remiseroData)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Usuario agregado a la agencia y actualizado.", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al actualizar el campo agencia: ${it.message}", Toast.LENGTH_SHORT).show()
+                            }
                     }
                     .addOnFailureListener {
                         Toast.makeText(this, "Error al agregar al usuario: ${it.message}", Toast.LENGTH_SHORT).show()
@@ -159,6 +181,23 @@ class ActivityBuscarEmpleado : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show()
             callback("") // Llamada al callback con un valor vacío si no hay un usuario autenticado
+        }
+    }
+    private fun asignarConductorAlAuto(conductor: String) {
+        val db = FirebaseDatabase.getInstance().reference
+        val autoId = intent.getStringExtra("carId") // Obtener el ID del auto (debe pasarse como extra)
+
+        if (autoId != null) {
+            val autoRef = db.child("companies").child("agencia_name").child("cars").child(autoId)
+
+            // Actualizamos el campo 'conductor' en la base de datos
+            autoRef.child("conductor").setValue(conductor).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Conductor asignado correctamente", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Error al asignar conductor", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

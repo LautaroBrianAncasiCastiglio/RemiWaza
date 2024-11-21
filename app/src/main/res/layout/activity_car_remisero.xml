@@ -11,9 +11,23 @@
     <include
         layout="@layout/header_remisero"
         android:id="@+id/customHeader" />
+    <TextView
+        android:id="@+id/textViewNoCars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="No hay autos disponibles"
+        android:textColor="@color/white"
+        android:padding="20dp"
+        android:textSize="25dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/personalCar" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listaDerecha"
+        android:id="@+id/listCar"
         android:layout_width="400dp"
         android:layout_height="559dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/personalCar"
+        android:id="@+id/btnpersonalCar"
         android:layout_width="340dp"
         android:layout_height="70dp"
         android:layout_marginTop="100dp"
